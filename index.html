@@ -5,342 +5,345 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Niyaz Knowledge Map</title>
 <style>
-/* ===== DESIGN TOKENS ===== */
-:root {
-  --bg:#0b0d10; --panel:#11151b; --text:#e8f0f8; --muted:#93a1b1;
-  --accent:#4cc9f0; --accent2:#f38ba8; --edge:#4f5b66;
-  --node:#1b222c; --node-border:#6b7280; --highlight:#22c55e;
-  --shadow:rgba(0,0,0,0.45); --dim:.16;
-  --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
-  --radius:10px; --radius-sm:8px;
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root{
+  --bg:#0c0e12;--panel:#12161d;--panel2:#181e28;--text:#e2eaf4;--muted:#7a8fa6;--border:#2a3340;
+  --accent:#4cc9f0;--accent2:#f38ba8;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;
+  --edge:#3a4555;--node-fill:#1a2130;--node-border:#3d4f62;--hi:#22c55e;
+  --shadow:rgba(0,0,0,.5);--dim:.14;
+  --r:10px;--rs:7px;
+  --font-mono:'Fira Code','Cascadia Code',Consolas,monospace;
 }
-[data-theme="light"] {
-  --bg:#f4f7fb; --panel:#ffffff; --text:#0b0d10; --muted:#5b6773;
-  --accent:#0077ff; --accent2:#c026d3; --edge:#a0aec0;
-  --node:#ffffff; --node-border:#cbd5e1; --highlight:#059669;
-  --shadow:rgba(0,0,0,0.10); --dim:.22;
+[data-theme=light]{
+  --bg:#f0f4f8;--panel:#ffffff;--panel2:#f8fafc;--text:#0d1117;--muted:#556677;--border:#d0dae6;
+  --accent:#0070f3;--accent2:#c026d3;--ok:#16a34a;--warn:#d97706;--danger:#dc2626;
+  --edge:#b0bec8;--node-fill:#ffffff;--node-border:#b8c8d8;--hi:#16a34a;
+  --shadow:rgba(0,0,0,.1);--dim:.2;
 }
-
-/* ===== RESET ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
+html,body{height:100%;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
 
-/* ===== LOCK SCREEN ===== */
-#lockScreen{
-  position:fixed;inset:0;z-index:1000;
-  background:var(--bg);
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:0;
-}
-.lock-card{
-  background:var(--panel);border:1px solid var(--node-border);
-  border-radius:16px;padding:40px 36px;width:min(380px,90vw);
-  box-shadow:0 24px 60px var(--shadow);
-  display:flex;flex-direction:column;gap:20px;
-  animation:slideUp .35s ease;
-}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.lock-logo{text-align:center;font-size:28px;font-weight:700;letter-spacing:-0.5px;color:var(--text)}
-.lock-logo span{color:var(--accent)}
-.lock-subtitle{text-align:center;color:var(--muted);font-size:13px;margin-top:-12px}
-.lock-input-wrap{position:relative}
-.lock-input-wrap input{
-  width:100%;padding:13px 44px 13px 16px;
-  background:var(--bg);color:var(--text);
-  border:1.5px solid var(--node-border);border-radius:var(--radius-sm);
-  font-size:16px;outline:none;letter-spacing:3px;
-  transition:border-color .15s,box-shadow .15s;
-}
-.lock-input-wrap input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in oklab,var(--accent) 22%,transparent)}
-.lock-input-wrap input.error{border-color:var(--danger);animation:shake .3s ease}
-.eye-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:17px;line-height:1}
-.lock-btn{
-  width:100%;padding:13px;background:var(--accent);color:#fff;
-  border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;
-  cursor:pointer;transition:opacity .15s,transform .1s;
-}
-.lock-btn:hover{opacity:.88}
-.lock-btn:active{transform:scale(.98)}
-.lock-btn:disabled{opacity:.5;cursor:not-allowed}
-.lock-error{color:var(--danger);font-size:12px;text-align:center;min-height:16px}
-.lock-status{color:var(--muted);font-size:12px;text-align:center}
-@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+/* ══════════════════════════════════════════
+   LOCK SCREEN
+══════════════════════════════════════════ */
+#lockScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center}
+.lock-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:44px 40px;width:min(400px,92vw);display:flex;flex-direction:column;gap:22px;box-shadow:0 30px 70px var(--shadow);animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.lock-logo{text-align:center;font-size:30px;font-weight:800;letter-spacing:-1px}.lock-logo em{color:var(--accent);font-style:normal}
+.lock-sub{text-align:center;color:var(--muted);font-size:13px;margin-top:-14px}
+.lock-field{position:relative}
+.lock-field input{width:100%;padding:13px 46px 13px 16px;background:var(--bg);color:var(--text);border:1.5px solid var(--border);border-radius:var(--rs);font-size:16px;outline:none;letter-spacing:2px;transition:border .15s,box-shadow .15s}
+.lock-field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in oklab,var(--accent) 20%,transparent)}
+.lock-field input.err{border-color:var(--danger);animation:shake .3s}
+.eye{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px}
+.lock-go{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:700;cursor:pointer;transition:opacity .15s,transform .1s;letter-spacing:.2px}
+.lock-go:hover{opacity:.85}.lock-go:active{transform:scale(.98)}.lock-go:disabled{opacity:.45;cursor:not-allowed}
+.lock-err{color:var(--danger);font-size:12px;text-align:center;min-height:16px}
+.lock-st{color:var(--muted);font-size:12px;text-align:center}
+@keyframes shake{0%,100%{transform:translateX(0)}25%,75%{transform:translateX(-5px)}50%{transform:translateX(5px)}}
 
-/* ===== LOADING OVERLAY ===== */
-#loadingOverlay{
-  position:fixed;inset:0;z-index:999;background:var(--bg);
-  display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;
-}
-.spinner{width:40px;height:40px;border:3px solid var(--node-border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{color:var(--muted);font-size:14px}
+/* ══════════════════════════════════════════
+   APP SHELL
+══════════════════════════════════════════ */
+#app{display:none;height:100vh;grid-template-rows:auto 1fr;grid-template-columns:1fr}
+#app.visible{display:grid}
 
-/* ===== APP SHELL ===== */
-#app{display:none;height:100vh;display:none;grid-template-rows:auto 1fr}
-
-/* ===== HEADER ===== */
-header{
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  padding:8px 14px;background:var(--panel);
-  border-bottom:1px solid var(--node-border);
-  position:sticky;top:0;z-index:6;min-height:52px;
-}
-.title{font-weight:700;font-size:15px;letter-spacing:.2px;white-space:nowrap;color:var(--text)}
-.title span{color:var(--accent)}
-.hdr-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1}
+/* ══════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════ */
+header{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--panel);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;min-height:52px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:15px;white-space:nowrap;letter-spacing:-.3px}.logo em{color:var(--accent);font-style:normal}
+.hctrls{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1}
 .spacer{flex:1}
-#breadcrumb{color:var(--muted);font-size:12px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#breadcrumb a{color:var(--accent);text-decoration:none}
-#breadcrumb a:hover{text-decoration:underline}
-
-/* ===== BUTTONS & INPUTS ===== */
-button,select,input[type="search"]{
-  background:var(--bg);color:var(--text);
-  border:1px solid var(--node-border);border-radius:var(--radius-sm);
-  padding:7px 10px;outline:none;font-size:13px;
-  transition:border-color .15s,box-shadow .15s;cursor:pointer;
-}
-button:hover,select:hover{border-color:var(--muted)}
-button:focus,select:focus,input:focus{
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px color-mix(in oklab,var(--accent) 22%,transparent);
-}
-#searchInput{width:220px;max-width:45vw;padding-left:30px}
-.search-wrap{position:relative}
-.search-wrap::before{content:"⌕";position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}
-
-/* ===== CLOUD SYNC STATUS ===== */
-#syncStatus{
-  display:flex;align-items:center;gap:6px;
-  font-size:12px;color:var(--muted);
-  padding:5px 10px;border:1px solid var(--node-border);
-  border-radius:var(--radius-sm);white-space:nowrap;
-  cursor:default;user-select:none;
-}
+#breadcrumb{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px}
+#breadcrumb a{color:var(--accent);text-decoration:none}#breadcrumb a:hover{text-decoration:underline}
+.sw{position:relative}.sw::before{content:"⌕";position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}
+#searchInput{padding-left:28px;width:180px;max-width:38vw}
+#syncStatus{display:flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:11px;color:var(--muted);white-space:nowrap;cursor:default;user-select:none}
 #syncDot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background .3s}
-#syncDot.ok{background:var(--ok)}
-#syncDot.busy{background:var(--warn);animation:pulse .8s ease infinite alternate}
-#syncDot.err{background:var(--danger)}
-@keyframes pulse{to{opacity:.4}}
+#syncDot.ok{background:var(--ok)}#syncDot.busy{background:var(--warn);animation:blink .7s ease infinite alternate}#syncDot.err{background:var(--danger)}
+@keyframes blink{to{opacity:.3}}
+hdr-btn,button,select,input{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--rs);padding:6px 10px;outline:none;font-size:12px;cursor:pointer;transition:border .12s,box-shadow .12s}
+button:hover,select:hover{border-color:var(--muted)}
+button:focus,select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in oklab,var(--accent) 18%,transparent)}
 
-/* ===== VIEW (SVG canvas) ===== */
-.view{position:relative;overflow:hidden;flex:1}
-svg{
-  width:100%;height:100%;
-  background:radial-gradient(1000px circle at 35% 25%,color-mix(in oklab,var(--panel) 65%,transparent),var(--bg) 65%);
-  display:block;user-select:none;-webkit-user-select:none;
-  touch-action:none;
-}
+/* ══════════════════════════════════════════
+   MAIN LAYOUT — map + note panel
+══════════════════════════════════════════ */
+.main{display:grid;grid-template-columns:1fr;height:100%;overflow:hidden;position:relative}
+.main.note-open{grid-template-columns:1fr 420px}
+@media(max-width:900px){.main.note-open{grid-template-columns:1fr}.main.note-open .note-panel{position:absolute;inset:0;z-index:8;width:100%}}
 
-/* ===== EDGES ===== */
+/* ══════════════════════════════════════════
+   SVG CANVAS
+══════════════════════════════════════════ */
+.view{position:relative;overflow:hidden}
+svg{width:100%;height:100%;background:radial-gradient(900px circle at 40% 30%,color-mix(in oklab,var(--panel) 60%,transparent),var(--bg) 65%);display:block;user-select:none;-webkit-user-select:none;touch-action:none}
 .edges path{fill:none;stroke:var(--edge);stroke-width:1.3;opacity:.9;transition:opacity .18s,filter .18s}
-.edges path.dim{opacity:var(--dim);filter:grayscale(.6)}
-
-/* ===== NODES ===== */
+.edges path.dim{opacity:var(--dim);filter:grayscale(.5)}
 .node{cursor:pointer;transition:opacity .18s,filter .18s}
-.node.dim{opacity:var(--dim);filter:grayscale(.5)}
-.node circle{fill:var(--node);stroke:var(--node-border);stroke-width:1.2;filter:drop-shadow(0 1px 2px var(--shadow))}
-.node .label{font-size:13px;paint-order:stroke;stroke:var(--panel);stroke-width:3px;fill:var(--text)}
+.node.dim{opacity:var(--dim);filter:grayscale(.4)}
+.node circle{fill:var(--node-fill);stroke:var(--node-border);stroke-width:1.2;filter:drop-shadow(0 1px 3px var(--shadow))}
+.node .lbl{font-size:12.5px;paint-order:stroke;stroke:var(--bg);stroke-width:3.5px;fill:var(--text)}
 .node.root circle{stroke:var(--accent);stroke-width:2.2}
 .node.collapsed circle{stroke-dasharray:3 3;stroke:var(--accent2)}
-.node .badge{font-size:10px;fill:var(--muted)}
-.node.highlight circle{stroke:var(--highlight);stroke-width:2.5}
-.node.selected circle{stroke:var(--accent);stroke-width:2.5}
+.node .badge{font-size:9.5px;fill:var(--muted)}
+.node.hi circle{stroke:var(--hi);stroke-width:2.5}
+.node.sel circle{stroke:var(--accent);stroke-width:2.5;filter:drop-shadow(0 0 6px color-mix(in oklab,var(--accent) 40%,transparent))}
+.node.has-note circle{stroke-width:2;stroke:color-mix(in oklab,var(--accent) 60%,var(--node-border))}
+.node .note-dot{fill:var(--accent);opacity:.8}
 
-/* ===== TOOLTIP ===== */
-.tooltip{
-  position:absolute;max-width:300px;
-  background:var(--panel);border:1px solid var(--node-border);
-  border-radius:var(--radius);padding:10px 12px;
-  box-shadow:0 8px 28px var(--shadow);
-  pointer-events:none;z-index:5;display:none;
-}
-.tooltip .tt-title{font-weight:600;margin-bottom:4px;font-size:13px}
-.tooltip .tt-note{color:var(--muted);font-size:12px;line-height:1.4}
-.tooltip .tt-tags{color:var(--accent);font-size:11px;margin-top:4px}
+/* HUD */
+.hud{position:absolute;left:12px;bottom:14px;z-index:4;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:6px 8px;display:flex;gap:6px}
+.hud button{padding:6px 10px;font-size:15px;line-height:1}
 
-/* ===== HUD (zoom controls) ===== */
-.hud{
-  position:absolute;left:12px;bottom:12px;z-index:4;
-  background:var(--panel);border:1px solid var(--node-border);
-  border-radius:var(--radius);padding:6px 8px;display:flex;gap:6px;
-}
-.hud button{padding:6px 10px;font-size:16px;line-height:1}
+/* Tooltip */
+.tip{position:absolute;max-width:260px;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;box-shadow:0 8px 28px var(--shadow);pointer-events:none;z-index:6;display:none}
+.tip-title{font-weight:600;font-size:13px;margin-bottom:3px}
+.tip-note{color:var(--muted);font-size:11.5px;line-height:1.45;max-height:60px;overflow:hidden}
+.tip-tags{color:var(--accent);font-size:11px;margin-top:4px}
 
-/* ===== SIDE PANEL ===== */
-.side-panel{
-  position:absolute;right:12px;top:12px;z-index:5;
-  background:var(--panel);border:1px solid var(--node-border);
-  border-radius:14px;padding:12px 14px;
-  width:min(340px,42vw);max-height:calc(100vh - 90px);
-  overflow-y:auto;box-shadow:0 12px 36px var(--shadow);
-  scrollbar-width:thin;scrollbar-color:var(--node-border) transparent;
-}
-.side-panel h3{font-size:14px;font-weight:600;margin-bottom:6px}
-.side-panel .sp-path{color:var(--muted);font-size:11px;margin-bottom:6px}
-.side-panel .sp-note{color:var(--text);font-size:13px;line-height:1.5;margin-bottom:8px}
-.side-panel .chips{margin:6px 0;display:flex;flex-wrap:wrap;gap:4px}
-.chip{font-size:11px;background:color-mix(in oklab,var(--accent) 18%,transparent);border:1px solid var(--node-border);color:var(--text);padding:2px 8px;border-radius:999px}
-.side-panel ul{margin:6px 0 0 16px;font-size:12px;color:var(--muted);line-height:1.6}
-.view-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.view-actions button{padding:6px 10px;font-size:12px}
+/* ══════════════════════════════════════════
+   NOTE PANEL — OneNote-inspired
+══════════════════════════════════════════ */
+.note-panel{background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;transition:width .2s}
 
-/* ===== EDITOR ===== */
-.editor{display:none;margin-top:12px;border-top:1px dashed var(--node-border);padding-top:12px}
-.editor.active{display:block}
-.editor .row{display:grid;grid-template-columns:80px 1fr;gap:8px;margin:6px 0;align-items:start}
-.editor label{color:var(--muted);font-size:12px;padding-top:7px}
-.editor input[type="text"],.editor textarea,.editor select{
-  width:100%;background:var(--bg);color:var(--text);
-  border:1px solid var(--node-border);border-radius:var(--radius-sm);
-  padding:7px 10px;font-size:13px;outline:none;
-  transition:border-color .15s;
-}
-.editor input:focus,.editor textarea:focus,.editor select:focus{border-color:var(--accent)}
-.editor textarea{min-height:80px;resize:vertical;line-height:1.5}
-.editor .actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.btn-ok{border-color:color-mix(in oklab,var(--ok) 45%,transparent) !important}
-.btn-warn{border-color:color-mix(in oklab,var(--warn) 45%,transparent) !important}
-.btn-danger{border-color:color-mix(in oklab,var(--danger) 45%,transparent) !important}
-.btn-ok:hover{background:color-mix(in oklab,var(--ok) 12%,transparent)}
-.btn-warn:hover{background:color-mix(in oklab,var(--warn) 12%,transparent)}
-.btn-danger:hover{background:color-mix(in oklab,var(--danger) 12%,transparent)}
+/* Note panel header */
+.np-header{padding:12px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0}
+.np-title-input{flex:1;background:transparent;border:none;outline:none;font-size:16px;font-weight:700;color:var(--text);padding:0;min-width:0}
+.np-title-input::placeholder{color:var(--muted)}
+.np-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;padding:2px 6px;border-radius:4px;line-height:1;flex-shrink:0}
+.np-close:hover{color:var(--text);background:var(--panel2)}
+.np-meta{padding:6px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.np-path{font-size:11px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-tag-input{background:transparent;border:none;outline:none;font-size:11px;color:var(--accent);padding:2px 4px;min-width:80px;flex:1}
+.np-tag-input::placeholder{color:var(--muted)}
 
-/* ===== COLOR PALETTE ===== */
-.palette{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding-top:4px}
-.swatch{
-  width:22px;height:22px;border-radius:6px;
-  border:1.5px solid var(--node-border);background:var(--swatch,transparent);
-  cursor:pointer;padding:0;flex-shrink:0;
-  transition:transform .1s,outline .1s;
-}
-.swatch:hover{transform:scale(1.15)}
-.swatch.active{outline:2.5px solid var(--accent);outline-offset:2px}
-.swatch.none{
-  background:repeating-conic-gradient(#aaa 0 25%,transparent 0 50%) 50%/8px 8px;
-  font-weight:700;color:var(--muted);font-size:12px;
-  display:flex;align-items:center;justify-content:center;
-}
+/* Toolbar */
+.np-toolbar{padding:6px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:3px;flex-shrink:0;flex-wrap:wrap}
+.tb-btn{background:none;border:1px solid transparent;border-radius:5px;padding:4px 7px;font-size:13px;color:var(--muted);cursor:pointer;line-height:1;transition:background .1s,color .1s,border-color .1s;min-width:28px;text-align:center}
+.tb-btn:hover{background:var(--panel2);color:var(--text);border-color:var(--border)}
+.tb-btn.active{background:color-mix(in oklab,var(--accent) 16%,transparent);color:var(--accent);border-color:color-mix(in oklab,var(--accent) 30%,transparent)}
+.tb-sep{width:1px;height:18px;background:var(--border);margin:0 3px;flex-shrink:0}
+.tb-color-btn{width:20px;height:20px;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;padding:0;display:inline-block;flex-shrink:0;vertical-align:middle}
+.color-row{display:flex;gap:4px;align-items:center;padding:4px 10px 6px;flex-shrink:0}
 
-/* ===== PERSIST SECTION ===== */
-.persist{margin-top:12px;border-top:1px dashed var(--node-border);padding-top:10px}
-.persist .actions{display:flex;gap:6px;flex-wrap:wrap}
-.hint{color:var(--muted);font-size:11px;margin-top:6px;line-height:1.5}
+/* Editor area */
+.np-editor-wrap{flex:1;overflow-y:auto;padding:16px 18px;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.np-editor{outline:none;min-height:100%;font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word;caret-color:var(--accent)}
+.np-editor:empty::before{content:attr(data-placeholder);color:var(--muted);pointer-events:none}
 
-/* ===== HELP PANEL ===== */
-.help-panel{
-  position:absolute;right:12px;bottom:12px;background:var(--panel);
-  border:1px solid var(--node-border);border-radius:var(--radius);
-  padding:12px 14px;max-width:320px;z-index:4;display:none;
-}
-.help-panel h3{font-size:13px;margin-bottom:6px}
-.help-panel ul{padding-left:14px;font-size:12px;color:var(--muted);line-height:1.7}
-.help-close{position:absolute;top:8px;right:10px;cursor:pointer;color:var(--muted);background:none;border:none;font-size:16px}
+/* Formatting inside editor */
+.np-editor h1{font-size:22px;font-weight:700;margin:14px 0 6px;color:var(--text);line-height:1.3}
+.np-editor h2{font-size:17px;font-weight:600;margin:12px 0 5px;color:var(--text)}
+.np-editor h3{font-size:14px;font-weight:600;margin:10px 0 4px;color:var(--muted)}
+.np-editor blockquote{border-left:3px solid var(--accent);padding:6px 12px;margin:8px 0;background:color-mix(in oklab,var(--accent) 7%,transparent);border-radius:0 6px 6px 0;font-style:italic;color:var(--muted)}
+.np-editor pre,.np-editor code{font-family:var(--font-mono);font-size:12.5px;background:color-mix(in oklab,var(--muted) 10%,transparent);border-radius:5px;padding:2px 6px}
+.np-editor pre{padding:10px 14px;display:block;overflow-x:auto;line-height:1.55;margin:8px 0}
+.np-editor ul,.np-editor ol{padding-left:22px;margin:6px 0}
+.np-editor li{margin:3px 0;line-height:1.6}
+.np-editor ul li{list-style:disc}
+.np-editor ol li{list-style:decimal}
+.np-editor hr{border:none;border-top:1px solid var(--border);margin:14px 0}
+.np-editor a{color:var(--accent);text-decoration:underline}
+.np-editor mark{background:color-mix(in oklab,var(--warn) 28%,transparent);color:var(--text);border-radius:3px;padding:1px 3px}
+.np-editor .todo-item{display:flex;align-items:flex-start;gap:8px;margin:4px 0;padding:4px 8px;border-radius:6px;background:color-mix(in oklab,var(--muted) 5%,transparent)}
+.np-editor .todo-item input[type=checkbox]{margin-top:3px;accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.np-editor .todo-item.done span{text-decoration:line-through;color:var(--muted)}
+.np-editor table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+.np-editor th{background:var(--panel2);font-weight:600;text-align:left;padding:7px 10px;border:1px solid var(--border)}
+.np-editor td{padding:6px 10px;border:1px solid var(--border)}
+.np-editor tr:nth-child(even) td{background:color-mix(in oklab,var(--muted) 5%,transparent)}
 
-/* ===== FLASH TOAST ===== */
-.flash{
-  position:fixed;left:50%;top:16px;transform:translateX(-50%);
-  background:var(--panel);border:1px solid var(--node-border);
-  padding:8px 16px;border-radius:999px;z-index:9999;
-  box-shadow:0 6px 24px var(--shadow);font-size:13px;
-  pointer-events:none;white-space:nowrap;
-}
+/* Word / char count */
+.np-footer{padding:6px 14px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;font-size:11px;color:var(--muted)}
+.np-footer .wc{display:flex;gap:10px}
+.np-save-state{font-size:11px;color:var(--muted);transition:color .3s}
+.np-save-state.saved{color:var(--ok)}
+.np-save-state.unsaved{color:var(--warn)}
 
-/* ===== MOBILE TWEAKS ===== */
+/* ══════════════════════════════════════════
+   SIDE META PANEL (node controls, small)
+══════════════════════════════════════════ */
+.side-panel{position:absolute;right:14px;top:14px;z-index:5;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 14px;width:min(300px,90vw);max-height:calc(100vh - 100px);overflow-y:auto;box-shadow:0 12px 36px var(--shadow);scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+.sp-title{font-weight:700;font-size:14px;margin-bottom:4px}
+.sp-path{font-size:11px;color:var(--muted);margin-bottom:8px}
+.sp-actions{display:flex;gap:5px;flex-wrap:wrap}
+.sp-actions button{padding:5px 9px;font-size:12px}
+.edit-section{margin-top:12px;border-top:1px dashed var(--border);padding-top:12px;display:none}
+.edit-section.active{display:block}
+.row{display:grid;grid-template-columns:70px 1fr;gap:6px;margin:6px 0;align-items:start}
+.row label{font-size:11px;color:var(--muted);padding-top:7px}
+.row input,.row select{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--rs);padding:6px 9px;font-size:12px;outline:none}
+.row input:focus,.row select:focus{border-color:var(--accent)}
+.palette{display:flex;gap:5px;flex-wrap:wrap;padding-top:4px}
+.swatch{width:20px;height:20px;border-radius:5px;border:1.5px solid var(--border);background:var(--sw,transparent);cursor:pointer;padding:0;flex-shrink:0;transition:transform .1s}
+.swatch:hover{transform:scale(1.18)}.swatch.active{outline:2.5px solid var(--accent);outline-offset:2px}
+.swatch.none{background:repeating-conic-gradient(#999 0 25%,transparent 0 50%) 50%/7px 7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted)}
+.node-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.node-actions button{padding:6px 10px;font-size:12px}
+.btn-ok{border-color:color-mix(in oklab,var(--ok) 40%,transparent)!important}.btn-ok:hover{background:color-mix(in oklab,var(--ok) 10%,transparent)}
+.btn-w{border-color:color-mix(in oklab,var(--warn) 40%,transparent)!important}.btn-w:hover{background:color-mix(in oklab,var(--warn) 10%,transparent)}
+.btn-d{border-color:color-mix(in oklab,var(--danger) 40%,transparent)!important}.btn-d:hover{background:color-mix(in oklab,var(--danger) 10%,transparent)}
+.persist-sec{margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+.persist-sec h4{font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600}
+.persist-sec .acts{display:flex;gap:5px;flex-wrap:wrap}
+.hint{font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+
+/* Help panel */
+.help-panel{position:absolute;right:14px;bottom:14px;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;max-width:300px;z-index:4;display:none;font-size:12px}
+.help-panel h4{font-size:12px;margin-bottom:6px;font-weight:600}
+.help-panel ul{padding-left:14px;color:var(--muted);line-height:1.75}
+.help-close{position:absolute;top:8px;right:9px;cursor:pointer;color:var(--muted);background:none;border:none;font-size:15px}
+
+/* Toast */
+.toast{position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--border);padding:8px 18px;border-radius:999px;z-index:9999;box-shadow:0 6px 24px var(--shadow);font-size:13px;pointer-events:none;white-space:nowrap}
+
+/* Mobile */
 @media(max-width:640px){
-  .side-panel{width:calc(100vw - 24px);right:12px;top:auto;bottom:60px;max-height:45vh}
-  #searchInput{width:140px}
-  .hdr-controls .hide-mobile{display:none}
+  .side-panel{width:calc(100vw - 24px);right:12px;top:auto;bottom:66px;max-height:44vh}
+  .main.note-open .view{display:none}
+  #searchInput{width:110px}
+  .hm{display:none}
 }
 </style>
 </head>
 <body>
 
-<!-- ===== LOCK SCREEN ===== -->
+<!-- LOCK SCREEN -->
 <div id="lockScreen">
   <div class="lock-card">
-    <div class="lock-logo">🧊 <span>Niyaz</span> Map</div>
-    <div class="lock-subtitle">Enter your passkey to continue</div>
-    <div class="lock-input-wrap">
+    <div class="lock-logo">🧊 <em>Niyaz</em> Map</div>
+    <div class="lock-sub">Enter your passkey to continue</div>
+    <div class="lock-field">
       <input type="password" id="passInput" placeholder="Passkey" autocomplete="current-password" maxlength="64">
-      <button class="eye-btn" id="eyeBtn" title="Show/hide">👁</button>
+      <button class="eye" id="eyeBtn">👁</button>
     </div>
-    <div id="lockError" class="lock-error"></div>
-    <button class="lock-btn" id="unlockBtn">Unlock</button>
-    <div id="lockStatus" class="lock-status">Connecting to cloud…</div>
+    <div id="lockErr" class="lock-err"></div>
+    <button class="lock-go" id="unlockBtn">Unlock</button>
+    <div id="lockSt" class="lock-st">Ready</div>
   </div>
 </div>
 
-<!-- ===== LOADING OVERLAY ===== -->
-<div id="loadingOverlay">
-  <div class="spinner"></div>
-  <div class="loading-text">Loading your mind map…</div>
-</div>
-
-<!-- ===== MAIN APP ===== -->
+<!-- APP -->
 <div id="app">
   <header>
-    <div class="title">🧊 <span>Niyaz</span> Mind Map</div>
-    <div class="hdr-controls">
-      <div class="search-wrap">
-        <input id="searchInput" type="search" placeholder="Search…" aria-label="Search nodes">
-      </div>
-      <button id="btnClearSearch" class="hide-mobile">Clear</button>
+    <div class="logo">🧊 <em>Niyaz</em></div>
+    <div class="hctrls">
+      <div class="sw"><input id="searchInput" type="search" placeholder="Search…" aria-label="Search"></div>
       <button id="btnFit" title="Fit (F)">Fit</button>
-      <button id="btnUp" class="hide-mobile">Up</button>
-      <button id="btnRoot" class="hide-mobile">Root</button>
+      <button id="btnUp" class="hm" title="Up one level">Up</button>
+      <button id="btnRoot" class="hm">Root</button>
       <button id="btnTheme" title="Toggle theme">🌓</button>
-      <button id="btnEdit" title="Toggle edit mode">✏️ Edit</button>
-      <div id="syncStatus" title="Cloud sync status">
-        <div id="syncDot"></div>
-        <span id="syncText">—</span>
-      </div>
-      <span class="spacer hide-mobile"></span>
-      <span id="breadcrumb" aria-live="polite"></span>
+      <button id="btnEdit">✏️ Edit</button>
+      <div id="syncStatus" title="Cloud sync"><div id="syncDot"></div><span id="syncTxt">—</span></div>
+      <span class="spacer hm"></span>
+      <span id="breadcrumb"></span>
     </div>
   </header>
 
-  <div class="view" id="view">
-    <svg id="svg" role="img" aria-label="Mind map canvas">
-      <g id="viewport">
-        <g class="edges" id="edges"></g>
-        <g class="nodes" id="nodes"></g>
-      </g>
-    </svg>
+  <div class="main" id="main">
+    <!-- SVG MAP -->
+    <div class="view" id="view">
+      <svg id="svg" role="img" aria-label="Mind map">
+        <g id="viewport">
+          <g class="edges" id="edges"></g>
+          <g class="nodes" id="nodes"></g>
+        </g>
+      </svg>
 
-    <div class="hud">
-      <button id="btnZoomIn" title="Zoom in">+</button>
-      <button id="btnZoomOut" title="Zoom out">−</button>
-      <button id="btnHelp" title="Help (H)">?</button>
+      <div class="hud">
+        <button id="btnZoomIn">+</button>
+        <button id="btnZoomOut">−</button>
+        <button id="btnHelp" title="Help (H)">?</button>
+      </div>
+
+      <div class="tip" id="tip">
+        <div class="tip-title" id="tipTitle"></div>
+        <div class="tip-note" id="tipNote"></div>
+        <div class="tip-tags" id="tipTags"></div>
+      </div>
+
+      <!-- Node meta / edit panel (small, floating) -->
+      <aside class="side-panel" id="sidePanel"></aside>
+
+      <div class="help-panel" id="helpPanel">
+        <button class="help-close" id="helpClose">✕</button>
+        <h4>Keyboard &amp; Mouse</h4>
+        <ul>
+          <li><b>Click node</b> — select &amp; focus</li>
+          <li><b>Click circle</b> — collapse/expand</li>
+          <li><b>Double-click node</b> — open note panel</li>
+          <li><b>Dbl-click background</b> — back to root</li>
+          <li><b>Wheel</b> zoom · <b>Drag</b> pan</li>
+          <li><b>F</b> fit · <b>H</b> help · <b>↑↓←→</b> nav</li>
+          <li><b>Space</b> — collapse/expand selected</li>
+          <li>Cloud saves after every edit ☁</li>
+        </ul>
+      </div>
     </div>
 
-    <div class="tooltip" id="tooltip">
-      <div class="tt-title" id="tipTitle"></div>
-      <div class="tt-note" id="tipNote"></div>
-      <div class="tt-tags" id="tipTags"></div>
-    </div>
+    <!-- NOTE PANEL (OneNote-style) -->
+    <div class="note-panel" id="notePanel" style="display:none">
+      <div class="np-header">
+        <input class="np-title-input" id="npTitle" placeholder="Node title…" autocomplete="off">
+        <button class="np-close" id="npClose" title="Close note (Esc)">✕</button>
+      </div>
+      <div class="np-meta">
+        <span class="np-path" id="npPath"></span>
+        <input class="np-tag-input" id="npTags" placeholder="add tags…" title="Tags (comma separated)">
+      </div>
 
-    <aside class="side-panel" id="sidePanel" aria-live="polite"></aside>
+      <!-- Formatting toolbar -->
+      <div class="np-toolbar" id="npToolbar">
+        <!-- Text style -->
+        <button class="tb-btn" data-cmd="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+        <button class="tb-btn" data-cmd="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+        <button class="tb-btn" data-cmd="underline" title="Underline (Ctrl+U)"><u>U</u></button>
+        <button class="tb-btn" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+        <div class="tb-sep"></div>
+        <!-- Headings -->
+        <button class="tb-btn" data-block="h1" title="Heading 1">H1</button>
+        <button class="tb-btn" data-block="h2" title="Heading 2">H2</button>
+        <button class="tb-btn" data-block="h3" title="Heading 3">H3</button>
+        <div class="tb-sep"></div>
+        <!-- Lists -->
+        <button class="tb-btn" data-cmd="insertUnorderedList" title="Bullet list">• —</button>
+        <button class="tb-btn" data-cmd="insertOrderedList" title="Numbered list">1.</button>
+        <button class="tb-btn" id="tbTodo" title="Add to-do item">☐</button>
+        <div class="tb-sep"></div>
+        <!-- Blocks -->
+        <button class="tb-btn" data-block="blockquote" title="Quote"> ❝</button>
+        <button class="tb-btn" data-block="pre" title="Code block">&lt;/&gt;</button>
+        <button class="tb-btn" data-cmd="insertHorizontalRule" title="Divider">—</button>
+        <div class="tb-sep"></div>
+        <!-- Highlight -->
+        <button class="tb-btn" id="tbHighlight" title="Highlight">🖍</button>
+        <button class="tb-btn" data-cmd="removeFormat" title="Clear formatting">✕ fmt</button>
+        <div class="tb-sep"></div>
+        <!-- Table -->
+        <button class="tb-btn" id="tbTable" title="Insert table">⊞</button>
+        <!-- Link -->
+        <button class="tb-btn" id="tbLink" title="Insert link">🔗</button>
+      </div>
 
-    <div class="help-panel" id="helpPanel">
-      <button class="help-close" id="helpClose">✕</button>
-      <h3>Keyboard &amp; Mouse</h3>
-      <ul>
-        <li><b>Click node</b> — focus (others fade)</li>
-        <li><b>Click circle</b> — collapse/expand</li>
-        <li><b>Double-click node</b> — drill down</li>
-        <li><b>Double-click bg</b> — back to root</li>
-        <li><b>Wheel</b> — zoom · <b>Drag</b> — pan</li>
-        <li><b>F</b> — fit screen · <b>H</b> — help</li>
-        <li><b>↑↓←→</b> — navigate nodes</li>
-        <li><b>Space</b> — collapse/expand</li>
-        <li>Cloud saves automatically after each edit</li>
-      </ul>
+      <!-- Editor -->
+      <div class="np-editor-wrap">
+        <div class="np-editor" id="npEditor" contenteditable="true" spellcheck="true"
+             data-placeholder="Start typing… supports bold, headings, lists, code, tables, to-dos, and more."></div>
+      </div>
+
+      <div class="np-footer">
+        <div class="wc"><span id="npWC">0 words</span><span id="npCC">0 chars</span></div>
+        <div class="np-save-state" id="npSaveState">Saved ✓</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ===== EMBEDDED FALLBACK DATA ===== -->
+<!-- EMBEDDED DATA -->
 <script id="mindmap-data" type="application/json">
 {
   "title": "Niyaz Knowledge Map",
@@ -349,82 +352,59 @@ svg{
     "label": "Niyaz",
     "note": "A mind map for all activities for Niyaz",
     "tags": ["owner:niyaz","discipline:me"],
+    "richNote": "",
     "children": [
       {
-        "id": "commissioning",
-        "label": "Commissioning",
-        "note": "PFC, TAB, functional tests, documentation.",
+        "id": "commissioning","label": "Commissioning","note": "PFC, TAB, functional tests, documentation.","richNote":"","tags":[],
         "children": [
-          {"id":"pfc","label":"Pre-Functional Checks","note":"Rotation, safeties, sensors, wiring, labeling.","color":"#64748b","children":[],"tags":[]},
-          {"id":"tab","label":"TAB","note":"Air/water balancing to design flows and pressures.","color":"#10b981","children":[],"tags":[]},
-          {"id":"fpt","label":"Functional Testing","note":"Sequences under modes and alarms.","color":"#f97316","children":[],"tags":[]}
-        ],
-        "tags":[]
-      },
-      {
-        "id": "73f659cd-2213-40e5-8440-17ad554fb526",
-        "label": "HVAC",
-        "note": "Heating, Ventilation & Air Conditioning — systems, design, controls, commissioning, O&M.",
-        "tags": ["mep","HVAC"],
-        "color": "#22c55e",
-        "lineStyle": "solid",
-        "children": [
-          {
-            "id":"a75f7d57-c579-46f0-b460-8c4807edfb11","label":"Equipment","note":"Major airside and waterside equipment.","tags":[],"lineStyle":"solid",
-            "children":[
-              {"id":"96ed06b5-b728-450c-98b7-f14db10dbc82","label":"FCUs","note":"Fan Coil Units.","tags":[],"lineStyle":"solid","children":[]},
-              {"id":"032cf283-36de-48dc-859e-e5f6bb4ca72e","label":"AHUs","note":"Coils, filters, humidifiers, HRW; outdoor air handling.","tags":[],"color":"#e11d48","lineStyle":"solid","children":[]},
-              {"id":"7349636d-e27b-4f5e-8a78-11980b9f15d5","label":"Chillers","note":"Water or air cooled refrigeration machines.","tags":[],"lineStyle":"solid","children":[
-                {"id":"7092161d-6836-459c-b1cf-d287828a4484","label":"Air-Cooled Chillers","note":"Use ambient air to reject heat.","tags":[],"color":"#f59e0b","lineStyle":"solid","children":[],"info":["Use ambient air to reject heat via condenser fans.","Easier install — no cooling tower needed.","Less efficient in very hot climates.","Capacity: 100–500 TR. Common: Offices, small hotels."]},
-                {"id":"38a87747-1ef8-4995-82ab-d44a39ef28f6","label":"Water-Cooled Chillers","note":"Use water via cooling tower to reject heat.","tags":[],"color":"#3b82f6","lineStyle":"solid","children":[],"info":["More efficient, especially in Middle East heat.","Requires cooling tower, water pumps, treatment.","Capacity: 200–3000+ TR. Common: Large malls, hospitals."]},
-                {"id":"cf3d0ce0-6f27-4b98-bf7c-4a08805ae38b","label":"Compressor Types","note":"Types of compressors used in chillers.","tags":[],"lineStyle":"solid","children":[
-                  {"id":"403551fe-dc1c-4c3f-ad17-648672d92007","label":"Scroll","note":"Small to medium air-cooled chillers (50–250 TR).","tags":[],"color":"#ec4899","lineStyle":"solid","children":[]},
-                  {"id":"140b284f-89f4-4757-856b-81f16f10f429","label":"Centrifugal","note":"Large water-cooled chillers (500–3000+ TR).","tags":[],"lineStyle":"solid","children":[]},
-                  {"id":"0bad45c5-93f6-43da-84b1-394582595920","label":"Screw","note":"Medium to large water-cooled chillers.","tags":[],"color":"#f97316","lineStyle":"solid","children":[]}
-                ]}
-              ]}
-            ]
-          },
-          {
-            "id":"2184c50a-4d5a-44b5-942d-965c31fcc1f2","label":"Standards","note":"Industry standards for HVAC.","tags":[],"color":"#e11d48","lineStyle":"solid",
-            "children":[
-              {"id":"af91b534-5919-4c97-a34d-7504078adeae","label":"ASHRAE","note":"American Society of Heating, Refrigerating and Air-Conditioning Engineers.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[
-                {"id":"6a2e7bb5-80ee-42ef-ac4f-c4152db79755","label":"ASHRAE 62.1","note":"Ventilation for acceptable indoor air quality.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
-                {"id":"ashrae-90","label":"ASHRAE 90.1","note":"Energy standard for buildings.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]}
-              ]},
-              {"id":"7ef037be-84d6-4d0f-8846-d79e45d23969","label":"EUROVENT","note":"European HVAC equipment certification.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
-              {"id":"461e6003-e66c-4194-961a-a70d615e43a0","label":"AMCA","note":"Air Movement and Control Association.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]}
-            ]
-          },
-          {
-            "id":"0a3b0bdd-050c-47b4-8d5d-a491c41bbd58","label":"Core","note":"Core Knowledge of the HVAC field","tags":[],"color":"#64748b","lineStyle":"solid",
-            "children":[
-              {"id":"8c255504-39ef-4dbe-8a5c-166dd62f0fc1","label":"Thermodynamics","note":"Energy, heat, work and how they interact in physical systems.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[],"info":["First Law: Energy cannot be created or destroyed (ΔU = Q − W).","Second Law: Heat flows from hot to cold; introduces entropy.","Third Law: Entropy approaches zero at absolute zero temperature.","Applications: Engines, refrigerators, air conditioners, power plants."]},
-              {"id":"ae1e3990-22a2-40e6-82e0-8f2381c8e632","label":"Fluid Mechanics","note":"Study of fluids (liquids and gases) and forces on them.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
-              {"id":"bd51cadf-475a-4976-9042-1dec342766b9","label":"Heat Transfer","note":"Conduction, convection, radiation.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
-              {"id":"a138945c-a49b-439a-bd05-a592795356a8","label":"Psychrometrics","note":"Properties of moist air — humidity, enthalpy, dew point.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
-              {"id":"cfea3e2f-6f83-4a62-ba2f-76cedf2456eb","label":"Refrigeration Cycle","note":"Compression, condensation, expansion, evaporation.","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]}
-            ]
-          }
+          {"id":"pfc","label":"Pre-Functional Checks","note":"Rotation, safeties, sensors, wiring, labeling.","color":"#64748b","richNote":"","children":[],"tags":[]},
+          {"id":"tab","label":"TAB","note":"Air/water balancing to design flows and pressures.","color":"#10b981","richNote":"","children":[],"tags":[]},
+          {"id":"fpt","label":"Functional Testing","note":"Sequences under modes and alarms.","color":"#f97316","richNote":"","children":[],"tags":[]}
         ]
       },
       {
-        "id": "f9181609-8861-4119-81a0-1b9190dbcfc1",
-        "label": "Humonks",
-        "note": "A book exploring the ideas of the life of Humonks",
-        "tags": [],
-        "color": "#ec4899",
-        "lineStyle": "dotted",
-        "children": [
-          {"id":"9e28572f-5b10-44de-b857-ce6f06836f50","label":"Birth","note":"The beginning of the Humonk journey.","tags":[],"color":"#8b5cf6","lineStyle":"dotted","children":[]},
-          {"id":"89d24600-40f6-4b6c-b79a-1c651277d29a","label":"Rise","note":"The rise of Humonks.","tags":[],"color":"#f59e0b","lineStyle":"dashed","children":[]},
-          {"id":"80b8a0c5-0b96-4e53-a2fb-da45a55efb06","label":"Rule","note":"The rule of Humonks.","tags":[],"color":"#e11d48","lineStyle":"solid","children":[]}
-        ],
-        "info":["Humans","Monkeys","Humonks"]
+        "id":"73f659cd-2213-40e5-8440-17ad554fb526","label":"HVAC","note":"Heating, Ventilation & Air Conditioning — systems, design, controls, commissioning, O&M.","richNote":"","tags":["mep","HVAC"],"color":"#22c55e","lineStyle":"solid",
+        "children":[
+          {"id":"a75f7d57","label":"Equipment","note":"Major airside and waterside equipment.","richNote":"","tags":[],"lineStyle":"solid","children":[
+            {"id":"96ed06b5","label":"FCUs","note":"Fan Coil Units — terminal units for cooling/heating.","richNote":"","tags":[],"lineStyle":"solid","children":[]},
+            {"id":"032cf283","label":"AHUs","note":"Coils, filters, humidifiers, HRW; outdoor air handling.","richNote":"","tags":[],"color":"#e11d48","lineStyle":"solid","children":[]},
+            {"id":"7349636d","label":"Chillers","note":"Water or air cooled refrigeration machines.","richNote":"","tags":[],"lineStyle":"solid","children":[
+              {"id":"7092161d","label":"Air-Cooled Chillers","note":"Use ambient air to reject heat. Easier install, limited to ~500TR.","richNote":"","tags":[],"color":"#f59e0b","lineStyle":"solid","children":[]},
+              {"id":"38a87747","label":"Water-Cooled Chillers","note":"More efficient, requires cooling tower. Up to 3000+TR.","richNote":"","tags":[],"color":"#3b82f6","lineStyle":"solid","children":[]},
+              {"id":"cf3d0ce0","label":"Compressor Types","note":"Scroll, Centrifugal, Screw.","richNote":"","tags":[],"lineStyle":"solid","children":[
+                {"id":"403551fe","label":"Scroll","note":"50–250 TR, simple and compact.","richNote":"","tags":[],"color":"#ec4899","lineStyle":"solid","children":[]},
+                {"id":"140b284f","label":"Centrifugal","note":"500–3000+ TR, large water-cooled.","richNote":"","tags":[],"lineStyle":"solid","children":[]},
+                {"id":"0bad45c5","label":"Screw","note":"Medium to large, reliable part-load.","richNote":"","tags":[],"color":"#f97316","lineStyle":"solid","children":[]}
+              ]}
+            ]}
+          ]},
+          {"id":"2184c50a","label":"Standards","note":"Industry standards for HVAC design.","richNote":"","tags":[],"color":"#e11d48","lineStyle":"solid","children":[
+            {"id":"af91b534","label":"ASHRAE","note":"American Society of Heating, Refrigerating and A/C Engineers.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[
+              {"id":"6a2e7bb5","label":"ASHRAE 62.1","note":"Ventilation for acceptable indoor air quality.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
+              {"id":"ashrae-90","label":"ASHRAE 90.1","note":"Energy standard for buildings.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]}
+            ]},
+            {"id":"7ef037be","label":"EUROVENT","note":"European HVAC equipment certification body.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
+            {"id":"461e6003","label":"AMCA","note":"Air Movement and Control Association standards.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]}
+          ]},
+          {"id":"0a3b0bdd","label":"Core Science","note":"Foundational engineering knowledge for HVAC.","richNote":"","tags":[],"color":"#64748b","lineStyle":"solid","children":[
+            {"id":"8c255504","label":"Thermodynamics","note":"Energy, heat, work and how they interact.","richNote":"<h2>Laws of Thermodynamics</h2><ul><li><b>Zeroth Law</b> — thermal equilibrium defines temperature</li><li><b>First Law</b> — energy cannot be created or destroyed (ΔU = Q − W)</li><li><b>Second Law</b> — heat flows hot to cold; entropy increases</li><li><b>Third Law</b> — entropy → 0 as T → absolute zero</li></ul><h2>Applications in HVAC</h2><ul><li>Refrigeration cycle design</li><li>Heat exchanger sizing</li><li>Energy audits and COP calculations</li></ul>","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
+            {"id":"ae1e3990","label":"Fluid Mechanics","note":"Study of fluids and forces — duct sizing, pump selection.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
+            {"id":"bd51cadf","label":"Heat Transfer","note":"Conduction, convection, radiation in building envelopes.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
+            {"id":"a138945c","label":"Psychrometrics","note":"Properties of moist air — humidity, enthalpy, dew point.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]},
+            {"id":"cfea3e2f","label":"Refrigeration Cycle","note":"Compression, condensation, expansion, evaporation.","richNote":"","tags":[],"color":"#22c55e","lineStyle":"solid","children":[]}
+          ]}
+        ]
+      },
+      {
+        "id":"f9181609","label":"Humonks","note":"A book exploring the life of Humonks.","richNote":"","tags":[],"color":"#ec4899","lineStyle":"dotted",
+        "children":[
+          {"id":"9e28572f","label":"Birth","note":"The beginning of the Humonk journey.","richNote":"","tags":[],"color":"#8b5cf6","lineStyle":"dotted","children":[]},
+          {"id":"89d24600","label":"Rise","note":"The rise of Humonks.","richNote":"","tags":[],"color":"#f59e0b","lineStyle":"dashed","children":[]},
+          {"id":"80b8a0c5","label":"Rule","note":"The rule of Humonks.","richNote":"","tags":[],"color":"#e11d48","lineStyle":"solid","children":[]}
+        ]
       }
     ],
-    "lineStyle":"solid",
-    "info":[]
+    "lineStyle":"solid"
   }
 }
 </script>
@@ -433,476 +413,444 @@ svg{
 (function(){
 'use strict';
 
-/* ════════════════════════════════════════════
-   CONFIG — JSONBin credentials
-   ════════════════════════════════════════════ */
+/* ─── CONFIG ─────────────────────────────── */
 const JSONBIN_KEY = '$2a$10$GNLCoN0qRc3RV/3zWCFt0OGQgv0L6Qp/sK0grpiE/eYYVxjkE8hOO';
 const JSONBIN_BIN = '6a2850a8da38895dfea1cb79';
 const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN}`;
+const CORRECT_PASS = 'niyaz2024';  // ← change this
 
-/* ════════════════════════════════════════════
-   PASSKEY — change this to your password
-   ════════════════════════════════════════════ */
-const CORRECT_PASS = 'niyaz2024';   // ← CHANGE THIS
+const LS_SESSION = 'niyaz:sess:v2';
+const LS_VIEW    = 'niyaz:view:v2';
+const LS_CACHE   = 'niyaz:cache:v2';
 
-/* ════════════════════════════════════════════
-   STORAGE KEYS
-   ════════════════════════════════════════════ */
-const LS_SESSION = 'niyaz:session:v1';
-const LS_VIEW    = 'niyaz:view:v1';
-const LS_DATA    = 'niyaz:data:v1';  // offline fallback cache
-
-/* ════════════════════════════════════════════
-   CONSTANTS
-   ════════════════════════════════════════════ */
 const PALETTE = ['#e11d48','#f97316','#f59e0b','#22c55e','#10b981','#06b6d4','#3b82f6','#8b5cf6','#ec4899','#64748b'];
-const ZOOM_MIN = 0.2, ZOOM_MAX = 4;
-const LEVEL_GAP = 145, NODE_R = 12;
-const DBL_DELAY = 260;
-const EMBEDDED_RAW = document.getElementById('mindmap-data').textContent.trim();
+const ZOOM_MIN=0.18, ZOOM_MAX=4, LEVEL_GAP=148, NODE_R=12, DBL_DELAY=260;
+const EMBEDDED = document.getElementById('mindmap-data').textContent.trim();
 
-/* ════════════════════════════════════════════
-   LOCK SCREEN
-   ════════════════════════════════════════════ */
-const lockScreen    = document.getElementById('lockScreen');
-const lockOverlay   = document.getElementById('loadingOverlay');
-const appEl         = document.getElementById('app');
-const passInput     = document.getElementById('passInput');
-const unlockBtn     = document.getElementById('unlockBtn');
-const lockError     = document.getElementById('lockError');
-const lockStatus    = document.getElementById('lockStatus');
-const eyeBtn        = document.getElementById('eyeBtn');
+/* ─── LOCK SCREEN ────────────────────────── */
+const lockEl   = document.getElementById('lockScreen');
+const appEl    = document.getElementById('app');
+const passIn   = document.getElementById('passInput');
+const unlockB  = document.getElementById('unlockBtn');
+const lockErr  = document.getElementById('lockErr');
+const lockSt   = document.getElementById('lockSt');
+let unlocked   = false;
 
-let unlocked = false;
-
-eyeBtn.onclick = () => {
-  passInput.type = passInput.type === 'password' ? 'text' : 'password';
-  eyeBtn.textContent = passInput.type === 'password' ? '👁' : '🙈';
+document.getElementById('eyeBtn').onclick = () => {
+  passIn.type = passIn.type==='password'?'text':'password';
 };
+function badPass(msg){ lockErr.textContent=msg; passIn.classList.add('err'); setTimeout(()=>passIn.classList.remove('err'),350); }
 
-function showLockError(msg){
-  lockError.textContent = msg;
-  passInput.classList.add('error');
-  setTimeout(() => passInput.classList.remove('error'), 400);
-}
-
-function showApp(){
-  lockScreen.style.display = 'none';
-  lockOverlay.style.display = 'none';
-  appEl.style.display = 'grid';
-  unlocked = true;
-}
-
-async function tryUnlock(){
-  const pass = passInput.value;
-  if (!pass){ showLockError('Please enter your passkey.'); return; }
-  if (pass !== CORRECT_PASS){ showLockError('Incorrect passkey. Try again.'); passInput.value = ''; return; }
-
-  lockError.textContent = '';
-  unlockBtn.disabled = true;
-  lockStatus.textContent = 'Loading from cloud…';
-
-  // Try to load from JSONBin
-  try {
-    const data = await fetchFromCloud();
-    if (data){ DATA = data; }
-    else { DATA = tryLoadCache() || JSON.parse(EMBEDDED_RAW); }
-  } catch(e){
-    lockStatus.textContent = 'Offline — using cached data.';
-    DATA = tryLoadCache() || JSON.parse(EMBEDDED_RAW);
-  }
-
-  reindex();
-  localStorage.setItem(LS_SESSION, '1');
-  showApp();
+async function doUnlock(){
+  if(!passIn.value){ badPass('Enter your passkey.'); return; }
+  if(passIn.value !== CORRECT_PASS){ badPass('Wrong passkey.'); passIn.value=''; return; }
+  lockErr.textContent=''; unlockB.disabled=true; lockSt.textContent='Loading from cloud…';
+  try{ const d=await cloudFetch(); if(d) DATA=d; else DATA=cacheLoad()||JSON.parse(EMBEDDED); }
+  catch(e){ DATA=cacheLoad()||JSON.parse(EMBEDDED); lockSt.textContent='Offline — using cached data.'; }
+  reindex(); localStorage.setItem(LS_SESSION,'1');
+  lockEl.style.display='none'; appEl.className='visible'; unlocked=true;
   init();
 }
+unlockB.onclick=doUnlock;
+passIn.addEventListener('keydown',e=>{ if(e.key==='Enter') doUnlock(); });
 
-unlockBtn.onclick = tryUnlock;
-passInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
-
-// Auto-unlock if session still active (same tab reload)
-if (localStorage.getItem(LS_SESSION)){
-  lockStatus.textContent = 'Resuming session…';
-  unlockBtn.disabled = true;
-  (async () => {
-    try { const d = await fetchFromCloud(); if (d) DATA = d; else DATA = tryLoadCache() || JSON.parse(EMBEDDED_RAW); }
-    catch(e){ DATA = tryLoadCache() || JSON.parse(EMBEDDED_RAW); }
-    reindex();
-    showApp();
-    init();
+if(localStorage.getItem(LS_SESSION)){
+  lockSt.textContent='Resuming…'; unlockB.disabled=true;
+  (async()=>{
+    try{ const d=await cloudFetch(); if(d) DATA=d; else DATA=cacheLoad()||JSON.parse(EMBEDDED); }
+    catch(e){ DATA=cacheLoad()||JSON.parse(EMBEDDED); }
+    reindex(); lockEl.style.display='none'; appEl.className='visible'; unlocked=true; init();
   })();
 }
 
-/* ════════════════════════════════════════════
-   CLOUD API (JSONBin)
-   ════════════════════════════════════════════ */
-let _syncTimer = null;
-let _syncPending = false;
+/* ─── CLOUD ──────────────────────────────── */
+let _saveTimer=null;
+function syncStatus(state,txt){ const d=document.getElementById('syncDot'),t=document.getElementById('syncTxt'); if(!d)return; d.className=state; t.textContent=txt; }
 
-function setSyncStatus(state, text){
-  const dot = document.getElementById('syncDot');
-  const txt = document.getElementById('syncText');
-  if (!dot) return;
-  dot.className = state;
-  txt.textContent = text;
-}
-
-async function fetchFromCloud(){
-  const res = await fetch(JSONBIN_URL + '/latest', {
-    headers: { 'X-Master-Key': JSONBIN_KEY }
-  });
-  if (!res.ok) throw new Error('Fetch failed: ' + res.status);
-  const json = await res.json();
-  const record = json.record;
-  // record might be {title,root,...} or {data:{title,root,...}}
-  if (record && record.root) return record;
-  if (record && record.data && record.data.root) return record.data;
+async function cloudFetch(){
+  const r=await fetch(JSONBIN_URL+'/latest',{headers:{'X-Master-Key':JSONBIN_KEY}});
+  if(!r.ok) throw new Error(r.status);
+  const j=await r.json(); const rec=j.record;
+  if(rec&&rec.root) return rec;
+  if(rec&&rec.data&&rec.data.root) return rec.data;
   return null;
 }
-
-async function saveToCloud(dataObj){
-  setSyncStatus('busy', 'Saving…');
-  const res = await fetch(JSONBIN_URL, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Master-Key': JSONBIN_KEY
-    },
-    body: JSON.stringify(dataObj)
-  });
-  if (!res.ok) throw new Error('Save failed: ' + res.status);
-  setSyncStatus('ok', 'Saved ✓ ' + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}));
-  try { localStorage.setItem(LS_DATA, JSON.stringify(dataObj)); } catch(e){}
+async function cloudSave(data){
+  syncStatus('busy','Saving…');
+  const r=await fetch(JSONBIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},body:JSON.stringify(data)});
+  if(!r.ok) throw new Error(r.status);
+  syncStatus('ok','Saved ✓ '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  try{ localStorage.setItem(LS_CACHE,JSON.stringify(data)); }catch(e){}
 }
-
 function scheduleSave(){
-  if (_syncTimer) clearTimeout(_syncTimer);
-  setSyncStatus('busy', 'Unsaved…');
-  _syncTimer = setTimeout(async () => {
-    try {
-      await saveToCloud(DATA);
-    } catch(e){
-      setSyncStatus('err', 'Save failed — offline?');
-      flashHint('⚠ Cloud save failed — data cached locally');
-      try { localStorage.setItem(LS_DATA, JSON.stringify(DATA)); } catch(_){}
-    }
-  }, 1500);
+  if(_saveTimer) clearTimeout(_saveTimer);
+  syncStatus('busy','Unsaved…');
+  _saveTimer=setTimeout(async()=>{ try{ await cloudSave(DATA); }catch(e){ syncStatus('err','Failed — offline?'); try{localStorage.setItem(LS_CACHE,JSON.stringify(DATA));}catch(_){} } },1800);
 }
+function cacheLoad(){ try{ const s=localStorage.getItem(LS_CACHE); return s?JSON.parse(s):null; }catch(e){ return null; }}
 
-function tryLoadCache(){
-  try { const s = localStorage.getItem(LS_DATA); return s ? JSON.parse(s) : null; } catch(e){ return null; }
-}
+/* ─── DATA ───────────────────────────────── */
+let DATA=JSON.parse(EMBEDDED);
+const nodeById=new Map();
 
-/* ════════════════════════════════════════════
-   DATA & STATE
-   ════════════════════════════════════════════ */
-let DATA = JSON.parse(EMBEDDED_RAW);
-const nodeById = new Map();
-
-function indexTree(node, parent=null){
-  if (!node.id) node.id = crypto.randomUUID();
-  node._parent = parent ? parent.id : null;
-  node.children = Array.isArray(node.children) ? node.children : [];
-  node.tags = Array.isArray(node.tags) ? node.tags : (typeof node.tags === 'string' ? node.tags.split(',').map(s=>s.trim()).filter(Boolean) : []);
-  if (typeof node.note !== 'string') node.note = node.note ? String(node.note) : '';
-  nodeById.set(node.id, node);
-  for (const ch of node.children) indexTree(ch, node);
+function indexTree(n,par=null){
+  if(!n.id) n.id=crypto.randomUUID();
+  n._parent=par?par.id:null;
+  n.children=Array.isArray(n.children)?n.children:[];
+  n.tags=Array.isArray(n.tags)?n.tags:(typeof n.tags==='string'?n.tags.split(',').map(s=>s.trim()).filter(Boolean):[]);
+  if(typeof n.note!=='string') n.note=n.note?String(n.note):'';
+  if(typeof n.richNote!=='string') n.richNote='';
+  nodeById.set(n.id,n);
+  for(const c of n.children) indexTree(c,n);
 }
 function reindex(){ nodeById.clear(); indexTree(DATA.root); }
 
-/* ════════════════════════════════════════════
-   VIEW STATE
-   ════════════════════════════════════════════ */
-let persisted = {};
-try { persisted = JSON.parse(localStorage.getItem(LS_VIEW) || '{}'); } catch(e){}
+/* ─── VIEW STATE ─────────────────────────── */
+let persisted={};
+try{ persisted=JSON.parse(localStorage.getItem(LS_VIEW)||'{}'); }catch(e){}
+let collapsed=new Set(persisted.collapsed||[]);
+let selectedId=persisted.selected||null;
+let currentRootId=persisted.rootId||'hvac-root';
+let editing=!!persisted.editing;
+let transform=persisted.transform||{x:0,y:0,k:1};
+let openNoteId=null;
 
-let collapsed     = new Set(persisted.collapsed || []);
-let selectedId    = persisted.selected || null;
-let currentRootId = persisted.currentRootId || 'hvac-root';
-let editing       = !!persisted.editing;
-let transform     = persisted.transform || { x:0, y:0, k:1 };
-
-function saveViewState(){
-  try {
-    localStorage.setItem(LS_VIEW, JSON.stringify({
-      collapsed: [...collapsed], transform, selected: selectedId,
-      theme: document.documentElement.dataset.theme || null,
-      currentRootId, editing
-    }));
-  } catch(e){}
+function saveView(){
+  try{ localStorage.setItem(LS_VIEW,JSON.stringify({collapsed:[...collapsed],transform,selected:selectedId,theme:document.documentElement.dataset.theme||null,rootId:currentRootId,editing})); }catch(e){}
 }
 
-/* ════════════════════════════════════════════
-   ELEMENTS
-   ════════════════════════════════════════════ */
-const svg        = document.getElementById('svg');
-const gViewport  = document.getElementById('viewport');
-const gEdges     = document.getElementById('edges');
-const gNodes     = document.getElementById('nodes');
-const tooltip    = document.getElementById('tooltip');
-const tipTitle   = document.getElementById('tipTitle');
-const tipNote    = document.getElementById('tipNote');
-const tipTags    = document.getElementById('tipTags');
-const viewEl     = document.getElementById('view');
-const sidePanelEl= document.getElementById('sidePanel');
+/* ─── ELEMENTS ───────────────────────────── */
+const svg=document.getElementById('svg');
+const gVP=document.getElementById('viewport');
+const gEdges=document.getElementById('edges');
+const gNodes=document.getElementById('nodes');
+const tip=document.getElementById('tip');
+const tipTitleEl=document.getElementById('tipTitle');
+const tipNoteEl=document.getElementById('tipNote');
+const tipTagsEl=document.getElementById('tipTags');
+const viewEl=document.getElementById('view');
+const mainEl=document.getElementById('main');
+const spEl=document.getElementById('sidePanel');
+const notePanel=document.getElementById('notePanel');
+const npTitle=document.getElementById('npTitle');
+const npPath=document.getElementById('npPath');
+const npTagsIn=document.getElementById('npTags');
+const npEditor=document.getElementById('npEditor');
+const npWC=document.getElementById('npWC');
+const npCC=document.getElementById('npCC');
+const npSaveState=document.getElementById('npSaveState');
 
-/* ════════════════════════════════════════════
-   HELPERS
-   ════════════════════════════════════════════ */
-function visibleChildren(n){ return collapsed.has(n.id) ? [] : (n.children||[]); }
-function leafCount(n){ const ch=visibleChildren(n); return ch.length ? ch.reduce((s,c)=>s+leafCount(c),0) : 1; }
-function collectSubtree(rootId){
-  const ids=new Set(); const root=nodeById.get(rootId); if(!root) return ids;
-  (function walk(n){ ids.add(n.id); if(!collapsed.has(n.id)) (n.children||[]).forEach(walk); })(root);
-  return ids;
-}
-function computeFocusSet(selId, visIds){
-  const set=new Set(); if(!selId) return set;
-  let p=nodeById.get(selId); while(p){ set.add(p.id); p=nodeById.get(p._parent); }
-  (function addDesc(id){ const n=nodeById.get(id); if(!n) return;
-    for(const ch of visibleChildren(n)) if(visIds.has(ch.id)){ set.add(ch.id); addDesc(ch.id); }
-  })(selId);
-  return set;
-}
-function breadcrumbPath(id){
-  const path=[]; let cur=nodeById.get(id);
-  while(cur){ path.unshift(cur); cur=nodeById.get(cur._parent); }
-  return path;
-}
+/* ─── HELPERS ────────────────────────────── */
+function visC(n){ return collapsed.has(n.id)?[]:(n.children||[]); }
+function leafCount(n){ const c=visC(n); return c.length?c.reduce((s,x)=>s+leafCount(x),0):1; }
+function subtree(rid){ const ids=new Set(); const r=nodeById.get(rid); if(!r) return ids; (function w(n){ ids.add(n.id); if(!collapsed.has(n.id))(n.children||[]).forEach(w); })(r); return ids; }
+function focusSet(selId,vis){ const s=new Set(); if(!selId) return s; let p=nodeById.get(selId); while(p){s.add(p.id);p=nodeById.get(p._parent);} (function d(id){ const n=nodeById.get(id); if(!n)return; for(const c of visC(n)) if(vis.has(c.id)){s.add(c.id);d(c.id);} })(selId); return s; }
+function bcPath(id){ const p=[]; let c=nodeById.get(id); while(c){p.unshift(c);c=nodeById.get(c._parent);} return p; }
 function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
-function isLeafVisible(n){ return visibleChildren(n).filter(c=>subtreeIds.has(c.id)).length===0; }
+function isLeaf(n){ return visC(n).filter(c=>stIds.has(c.id)).length===0; }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function escA(s){ return String(s).replace(/"/g,'&quot;'); }
+function parseTags(s){ if(!s)return[]; return [...new Set(s.replace(/#/g,' ').split(/[\s,]+/).map(t=>t.trim()).filter(Boolean))]; }
+function hasRichNote(n){ return n.richNote && n.richNote.trim().length>0; }
 
-function escapeHtml(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-function escapeAttr(s){ return String(s).replace(/"/g,'&quot;'); }
-function parseTags(s){ if(!s) return []; return [...new Set(s.replace(/#/g,' ').split(/[\s,]+/).map(t=>t.trim()).filter(Boolean))]; }
-function parseLines(s){ if(!s) return []; return s.split(/\r?\n/).map(x=>x.trim()).filter(Boolean); }
-function autoBullets(text){ if(!text) return []; return text.split(/(?:[;•·.]\s+)/g).map(s=>s.trim()).filter(Boolean).slice(0,4); }
-
-/* ════════════════════════════════════════════
-   LAYOUT
-   ════════════════════════════════════════════ */
-let subtreeIds = new Set();
-
+/* ─── LAYOUT ─────────────────────────────── */
+let stIds=new Set();
 function computeLayout(){
-  const root=nodeById.get(currentRootId);
-  if(!root) return;
+  const root=nodeById.get(currentRootId); if(!root)return;
   const cx=viewEl.clientWidth/2, cy=viewEl.clientHeight/2;
-  function layout(n,depth,start,end){
-    const angle=(start+end)/2, r=depth*LEVEL_GAP;
-    n._x=cx+r*Math.cos(angle); n._y=cy+r*Math.sin(angle); n._depth=depth;
-    const ch=visibleChildren(n).filter(c=>subtreeIds.has(c.id));
-    if(!ch.length) return;
-    let acc=start; const mass=ch.map(leafCount); const total=mass.reduce((a,b)=>a+b,0)||1;
-    for(let i=0;i<ch.length;i++){ const frac=mass[i]/total; const next=acc+(end-start)*frac; layout(ch[i],depth+1,acc,next); acc=next; }
+  function lay(n,depth,a0,a1){
+    const ang=(a0+a1)/2, r=depth*LEVEL_GAP;
+    n._x=cx+r*Math.cos(ang); n._y=cy+r*Math.sin(ang); n._depth=depth;
+    const ch=visC(n).filter(c=>stIds.has(c.id)); if(!ch.length)return;
+    let acc=a0; const mass=ch.map(leafCount); const tot=mass.reduce((a,b)=>a+b,0)||1;
+    for(let i=0;i<ch.length;i++){ const f=mass[i]/tot; lay(ch[i],depth+1,acc,acc+(a1-a0)*f); acc+=(a1-a0)*f; }
   }
-  layout(root,0,-Math.PI/2-Math.PI*0.8,-Math.PI/2+Math.PI*0.8);
+  lay(root,0,-Math.PI/2-Math.PI*.8,-Math.PI/2+Math.PI*.8);
 }
-
-function pathCurve(x1,y1,x2,y2){
-  const mx=(x1+x2)/2,my=(y1+y2)/2,dx=x2-x1,dy=y2-y1,nx=-dy,ny=dx,len=Math.hypot(dx,dy)||1;
-  const bulge=Math.min(55,len*0.18); const cx=mx+(nx/len)*bulge,cy2=my+(ny/len)*bulge;
-  return `M${x1} ${y1} Q${cx} ${cy2} ${x2} ${y2}`;
-}
-
-function setTransform(t){
-  transform=t;
-  gViewport.setAttribute('transform',`translate(${t.x},${t.y}) scale(${t.k})`);
-}
-
-function fitToScreen(pad=70){
-  const xs=[],ys=[];
-  subtreeIds.forEach(id=>{ const n=nodeById.get(id); if(typeof n._x==='number'){ xs.push(n._x); ys.push(n._y); }});
-  if(!xs.length) return;
+function curve(x1,y1,x2,y2){ const mx=(x1+x2)/2,my=(y1+y2)/2,dx=x2-x1,dy=y2-y1,nx=-dy,ny=dx,len=Math.hypot(dx,dy)||1,b=Math.min(55,len*.18); return `M${x1} ${y1} Q${mx+nx/len*b} ${my+ny/len*b} ${x2} ${y2}`; }
+function setTx(t){ transform=t; gVP.setAttribute('transform',`translate(${t.x},${t.y}) scale(${t.k})`); }
+function fitScreen(pad=70){
+  const xs=[],ys=[]; stIds.forEach(id=>{ const n=nodeById.get(id); if(typeof n._x==='number'){xs.push(n._x);ys.push(n._y);} });
+  if(!xs.length)return;
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
   const w=viewEl.clientWidth,h=viewEl.clientHeight;
   const k=clamp(Math.min(w/((maxX-minX)+pad*2),h/((maxY-minY)+pad*2)),ZOOM_MIN,ZOOM_MAX);
-  setTransform({x:w/2-k*(minX+maxX)/2,y:h/2-k*(minY+maxY)/2,k});
+  setTx({x:w/2-k*(minX+maxX)/2,y:h/2-k*(minY+maxY)/2,k});
 }
+function centerOn(id){ const n=nodeById.get(id); if(!n)return; const w=viewEl.clientWidth,h=viewEl.clientHeight; const k=clamp(Math.max(.7,transform.k),ZOOM_MIN,ZOOM_MAX); setTx({x:w/2-k*n._x,y:h/2-k*n._y,k}); }
+function svgPt(e){ const p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()); }
 
-function centerOnNode(id){
-  const n=nodeById.get(id); if(!n) return;
-  const w=viewEl.clientWidth,h=viewEl.clientHeight;
-  const k=clamp(Math.max(0.7,transform.k),ZOOM_MIN,ZOOM_MAX);
-  setTransform({x:w/2-k*n._x,y:h/2-k*n._y,k});
-}
+/* ─── TOOLTIP ────────────────────────────── */
+function posTip(cx,cy){ const pad=10,r=tip.getBoundingClientRect(); let l=cx+16,t=cy-16-r.height; const vw=document.documentElement.clientWidth,vh=document.documentElement.clientHeight; if(l+r.width+pad>vw)l=vw-r.width-pad; if(l<pad)l=pad; if(t<pad)t=Math.min(vh-r.height-pad,cy+16); tip.style.left=l+'px';tip.style.top=t+'px'; }
+function showTip(n,cx,cy){ tipTitleEl.textContent=n.label||n.id; tipNoteEl.textContent=n.note||''; tipTagsEl.textContent=(n.tags&&n.tags.length)?'# '+n.tags.join(' #'):''; tip.style.display='block'; tip.style.left='0px';tip.style.top='0px'; setTimeout(()=>posTip(cx,cy),0); }
+function hideTip(){ tip.style.display='none'; }
 
-/* ════════════════════════════════════════════
-   TOOLTIP
-   ════════════════════════════════════════════ */
-function positionTip(cx,cy){
-  const pad=10; tooltip.style.left='0px'; tooltip.style.top='0px';
-  const r=tooltip.getBoundingClientRect();
-  let left=cx+16,top=cy-16-r.height;
-  const vw=document.documentElement.clientWidth,vh=document.documentElement.clientHeight;
-  if(left+r.width+pad>vw) left=vw-r.width-pad;
-  if(left<pad) left=pad;
-  if(top<pad) top=Math.min(vh-r.height-pad,cy+16);
-  tooltip.style.left=left+'px'; tooltip.style.top=top+'px';
-}
-function showTip(node,cx,cy){
-  tipTitle.textContent=node.label||node.id;
-  tipNote.textContent=node.note||'';
-  tipTags.textContent=(node.tags&&node.tags.length)?'# '+node.tags.join('  #'):'';
-  tooltip.style.display='block';
-  positionTip(cx,cy);
-}
-function hideTip(){ tooltip.style.display='none'; }
+/* ─── CLICK DISCRIMINATOR ────────────────── */
+let cTimer=null, pClick=null;
+function schedClick(n,e,isCircle,fn){ if(cTimer){clearTimeout(cTimer);cTimer=null;}pClick=null; pClick={nodeId:n.id,isCircle,cx:e.clientX,cy:e.clientY}; cTimer=setTimeout(()=>{ cTimer=null; const nd=nodeById.get(pClick.nodeId); if(nd)fn(nd,pClick); pClick=null; },DBL_DELAY); }
+function cancelClick(){ if(cTimer){clearTimeout(cTimer);cTimer=null;}pClick=null; }
 
-function svgCursorPoint(evt){
-  const p=svg.createSVGPoint(); p.x=evt.clientX; p.y=evt.clientY;
-  return p.matrixTransform(svg.getScreenCTM().inverse());
-}
-
-/* ════════════════════════════════════════════
-   CLICK DISCRIMINATOR
-   ════════════════════════════════════════════ */
-let clickTimer=null, pendingClick=null;
-function scheduleSingleClick(node,evt,isCircle,fn){
-  if(clickTimer){ clearTimeout(clickTimer); clickTimer=null; } pendingClick=null;
-  pendingClick={nodeId:node.id,isCircle,clientX:evt.clientX,clientY:evt.clientY};
-  clickTimer=setTimeout(()=>{ clickTimer=null; const n=nodeById.get(pendingClick.nodeId); if(n) fn(n,pendingClick); pendingClick=null; },DBL_DELAY);
-}
-function cancelSingleClick(){ if(clickTimer){ clearTimeout(clickTimer); clickTimer=null; } pendingClick=null; }
-
-/* ════════════════════════════════════════════
-   RENDER
-   ════════════════════════════════════════════ */
+/* ─── RENDER ─────────────────────────────── */
 function render(){
-  subtreeIds=collectSubtree(currentRootId);
+  stIds=subtree(currentRootId);
   computeLayout();
-  if(selectedId && !subtreeIds.has(selectedId)) selectedId=currentRootId;
-  const focusSet=selectedId ? computeFocusSet(selectedId,subtreeIds) : null;
+  if(selectedId&&!stIds.has(selectedId)) selectedId=currentRootId;
+  const fSet=selectedId?focusSet(selectedId,stIds):null;
   gEdges.innerHTML=''; gNodes.innerHTML='';
 
-  // Edges
-  subtreeIds.forEach(id=>{
-    const node=nodeById.get(id), parent=nodeById.get(node._parent);
-    if(!parent||!subtreeIds.has(parent.id)) return;
+  stIds.forEach(id=>{
+    const n=nodeById.get(id),par=nodeById.get(n._parent);
+    if(!par||!stIds.has(par.id))return;
     const p=document.createElementNS('http://www.w3.org/2000/svg','path');
-    p.setAttribute('d',pathCurve(parent._x,parent._y,node._x,node._y));
-    if(node.color) p.style.stroke=node.color;
-    const ls=(node.lineStyle||'solid').toLowerCase();
-    if(ls==='dashed'){ p.style.strokeDasharray='6 4'; p.style.strokeLinecap='butt'; }
-    else if(ls==='dotted'){ p.style.strokeDasharray='2 3'; p.style.strokeLinecap='round'; }
-    if(focusSet && !(focusSet.has(parent.id)&&focusSet.has(node.id))) p.classList.add('dim');
+    p.setAttribute('d',curve(par._x,par._y,n._x,n._y));
+    if(n.color) p.style.stroke=n.color;
+    const ls=(n.lineStyle||'solid').toLowerCase();
+    if(ls==='dashed'){p.style.strokeDasharray='6 4';p.style.strokeLinecap='butt';}
+    else if(ls==='dotted'){p.style.strokeDasharray='2 3';p.style.strokeLinecap='round';}
+    if(fSet&&!(fSet.has(par.id)&&fSet.has(n.id))) p.classList.add('dim');
     gEdges.appendChild(p);
   });
 
-  // Nodes
-  subtreeIds.forEach(id=>{
-    const node=nodeById.get(id);
+  stIds.forEach(id=>{
+    const n=nodeById.get(id);
     const g=document.createElementNS('http://www.w3.org/2000/svg','g');
     g.classList.add('node');
-    if(focusSet&&!focusSet.has(node.id)) g.classList.add('dim');
-    if(node.id===currentRootId) g.classList.add('root');
-    if(collapsed.has(node.id)&&node.children.length) g.classList.add('collapsed');
-    if(selectedId&&node.id===selectedId) g.classList.add('selected');
-    if(_searchText&&matchesNode(node,_searchText)) g.classList.add('highlight');
-
-    g.setAttribute('transform',`translate(${node._x},${node._y})`);
+    if(fSet&&!fSet.has(n.id)) g.classList.add('dim');
+    if(n.id===currentRootId) g.classList.add('root');
+    if(collapsed.has(n.id)&&n.children.length) g.classList.add('collapsed');
+    if(selectedId&&n.id===selectedId) g.classList.add('sel');
+    if(_sText&&matchNode(n,_sText)) g.classList.add('hi');
+    if(hasRichNote(n)) g.classList.add('has-note');
+    g.setAttribute('transform',`translate(${n._x},${n._y})`);
     g.setAttribute('tabindex','0');
-    g.setAttribute('role','treeitem');
-    g.setAttribute('aria-label',node.label||node.id);
+    g.setAttribute('aria-label',n.label||n.id);
 
     const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
     c.setAttribute('r',String(NODE_R));
-    if(node.color) c.setAttribute('fill',node.color);
+    if(n.color) c.setAttribute('fill',n.color);
     g.appendChild(c);
 
-    const lbl=document.createElementNS('http://www.w3.org/2000/svg','text');
-    lbl.classList.add('label');
-    lbl.setAttribute('x',String(NODE_R+8));
-    lbl.setAttribute('y','4');
-    lbl.textContent=node.label||node.id;
-    g.appendChild(lbl);
-
-    if((node.children||[]).length){
-      const badge=document.createElementNS('http://www.w3.org/2000/svg','text');
-      badge.classList.add('badge');
-      badge.setAttribute('x',String(-NODE_R-6));
-      badge.setAttribute('y','4');
-      badge.setAttribute('text-anchor','end');
-      badge.textContent=String(node.children.length);
-      g.appendChild(badge);
+    // Rich note indicator dot
+    if(hasRichNote(n)){
+      const dot=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      dot.setAttribute('r','3'); dot.setAttribute('cx',String(NODE_R-2)); dot.setAttribute('cy',String(-NODE_R+2));
+      dot.classList.add('note-dot'); g.appendChild(dot);
     }
 
-    // Click
+    const lbl=document.createElementNS('http://www.w3.org/2000/svg','text');
+    lbl.classList.add('lbl'); lbl.setAttribute('x',String(NODE_R+8)); lbl.setAttribute('y','4');
+    lbl.textContent=n.label||n.id; g.appendChild(lbl);
+
+    if((n.children||[]).length){
+      const badge=document.createElementNS('http://www.w3.org/2000/svg','text');
+      badge.classList.add('badge'); badge.setAttribute('x',String(-NODE_R-6)); badge.setAttribute('y','4'); badge.setAttribute('text-anchor','end');
+      badge.textContent=String(n.children.length); g.appendChild(badge);
+    }
+
+    // Single click — select or collapse
     g.addEventListener('click',e=>{
       e.stopPropagation();
-      const isCircle=e.target.tagName.toLowerCase()==='circle'&&node.children?.length;
-      scheduleSingleClick(node,e,isCircle,(n,info)=>{
+      const isC=e.target.tagName.toLowerCase()==='circle'&&(n.children?.length||0)>0;
+      schedClick(n,e,isC,(nd,info)=>{
         if(info.isCircle){
-          if(collapsed.has(n.id)) collapsed.delete(n.id); else collapsed.add(n.id);
-          saveViewState(); render(); renderSidePanel(selectedId?nodeById.get(selectedId):null); hideTip();
+          if(collapsed.has(nd.id)) collapsed.delete(nd.id); else collapsed.add(nd.id);
+          saveView(); render(); spRender(selectedId?nodeById.get(selectedId):null); hideTip();
         } else {
-          selectedId=n.id;
-          updateBreadcrumb(); saveViewState(); render(); renderSidePanel(n);
-          showTip(n,info.clientX,info.clientY);
+          selectedId=nd.id; updateBC(); saveView(); render(); spRender(nd); showTip(nd,info.cx,info.cy);
         }
       });
     });
 
-    // Double-click → drill down
+    // Double click — open note panel
     g.addEventListener('dblclick',e=>{
-      e.stopPropagation(); cancelSingleClick();
-      currentRootId=node.id; selectedId=node.id;
-      updateBreadcrumb(); render(); fitToScreen(80); saveViewState(); renderSidePanel(node);
-      history.replaceState(null,'','#sub='+encodeURIComponent(node.id));
-      showTip(node,e.clientX,e.clientY);
+      e.stopPropagation(); cancelClick();
+      selectedId=n.id; updateBC(); render(); spRender(n);
+      openNote(n);
     });
 
-    // Touch
+    // Touch double tap
     let lastTap=0;
     g.addEventListener('touchend',e=>{
       const now=Date.now();
-      if(now-lastTap<300){ e.preventDefault(); cancelSingleClick(); currentRootId=node.id; selectedId=node.id; updateBreadcrumb(); render(); fitToScreen(80); saveViewState(); renderSidePanel(node); }
-      else { scheduleSingleClick(node,e,false,(n)=>{ selectedId=n.id; updateBreadcrumb(); saveViewState(); render(); renderSidePanel(n); }); }
+      if(now-lastTap<300){ e.preventDefault(); cancelClick(); selectedId=n.id; updateBC(); render(); spRender(n); openNote(n); }
+      else{ schedClick(n,e,false,(nd)=>{ selectedId=nd.id; updateBC(); saveView(); render(); spRender(nd); }); }
       lastTap=now;
     });
 
-    // Hover
-    g.addEventListener('mouseenter',e=>showTip(node,e.clientX,e.clientY));
-    g.addEventListener('mousemove',e=>{ if(tooltip.style.display==='block') positionTip(e.clientX,e.clientY); });
+    g.addEventListener('mouseenter',e=>showTip(n,e.clientX,e.clientY));
+    g.addEventListener('mousemove',e=>{ if(tip.style.display==='block') posTip(e.clientX,e.clientY); });
     g.addEventListener('mouseleave',hideTip);
-
     gNodes.appendChild(g);
   });
 }
 
-/* ════════════════════════════════════════════
-   SIDE PANEL
-   ════════════════════════════════════════════ */
-function renderSidePanel(node){
-  if(!node){
-    sidePanelEl.innerHTML=`<h3>Welcome 👋</h3><div class="sp-note">Click a node to see details.<br>Double-click to drill down into it.<br>Double-click background to return to root.</div><div class="hint" style="margin-top:8px">Use ✏️ Edit to add nodes, notes, and colors.</div>`;
-    return;
-  }
-  const path=breadcrumbPath(node.id).filter(n=>subtreeIds.has(n.id));
-  const chips=(node.tags||[]).map(t=>`<span class="chip">${escapeHtml(t)}</span>`).join('');
-  const bullets=Array.isArray(node.info)&&node.info.length?node.info:autoBullets(node.note);
-  const infoHtml=bullets.length?`<div style="margin-top:6px"><strong style="font-size:12px;color:var(--muted)">${isLeafVisible(node)?'Explainer':'Notes'}</strong><ul>${bullets.map(li=>`<li>${escapeHtml(li)}</li>`).join('')}</ul></div>`:'';
+/* ─── NOTE PANEL ─────────────────────────── */
+let _noteTimer=null, _noteNode=null;
 
-  sidePanelEl.innerHTML=`
-    <div class="viewer">
-      <h3>${escapeHtml(node.label||node.id)}</h3>
-      <div class="sp-path">${path.map(n=>escapeHtml(n.label||n.id)).join(' › ')}</div>
-      ${node.note?`<div class="sp-note">${escapeHtml(node.note)}</div>`:''}
-      ${chips?`<div class="chips">${chips}</div>`:''}
-      ${infoHtml}
-      <div class="view-actions">
-        <button id="spCenter">Center</button>
-        <button id="spDrill">Open Map</button>
-        <button id="spUp">Up</button>
-        <button id="spClear">Clear</button>
-      </div>
+function openNote(n){
+  _noteNode=n; openNoteId=n.id;
+  notePanel.style.display='flex'; notePanel.style.flexDirection='column';
+  mainEl.classList.add('note-open');
+
+  npTitle.value=n.label||'';
+  npPath.textContent=bcPath(n.id).map(x=>x.label||x.id).join(' › ');
+  npTagsIn.value=(n.tags||[]).join(', ');
+  npEditor.innerHTML=n.richNote||'';
+  if(!n.richNote) npEditor.innerHTML='';
+  updateWC();
+  npSaveState.textContent='Saved ✓'; npSaveState.className='np-save-state saved';
+  setTimeout(()=>npEditor.focus(),50);
+}
+
+function closeNote(){
+  flushNote();
+  notePanel.style.display='none';
+  mainEl.classList.remove('note-open');
+  openNoteId=null; _noteNode=null;
+}
+
+function flushNote(){
+  if(!_noteNode) return;
+  const n=nodeById.get(_noteNode.id); if(!n) return;
+  n.label=npTitle.value.trim()||n.label||'Untitled';
+  n.richNote=npEditor.innerHTML;
+  n.note=npEditor.textContent.trim().slice(0,200)||n.note;
+  n.tags=parseTags(npTagsIn.value);
+  reindex();
+}
+
+function schedNoteAutosave(){
+  npSaveState.textContent='Unsaved…'; npSaveState.className='np-save-state unsaved';
+  if(_noteTimer) clearTimeout(_noteTimer);
+  _noteTimer=setTimeout(()=>{
+    flushNote(); render(); spRender(_noteNode?nodeById.get(_noteNode.id):null);
+    scheduleSave();
+    npSaveState.textContent='Saved ✓'; npSaveState.className='np-save-state saved';
+  },1200);
+}
+
+npEditor.addEventListener('input',()=>{ updateWC(); schedNoteAutosave(); });
+npTitle.addEventListener('input',schedNoteAutosave);
+npTagsIn.addEventListener('input',schedNoteAutosave);
+
+function updateWC(){
+  const txt=npEditor.textContent||'';
+  const words=txt.trim().split(/\s+/).filter(Boolean).length;
+  npWC.textContent=words+' word'+(words!==1?'s':'');
+  npCC.textContent=txt.length+' char'+(txt.length!==1?'s':'');
+}
+
+document.getElementById('npClose').onclick=closeNote;
+
+/* ─── TOOLBAR ACTIONS ────────────────────── */
+function execCmd(cmd,val=null){ npEditor.focus(); document.execCommand(cmd,false,val); schedNoteAutosave(); }
+
+function insertBlock(tag){
+  npEditor.focus();
+  const sel=window.getSelection(); if(!sel.rangeCount) return;
+  const range=sel.getRangeAt(0);
+  const block=document.createElement(tag);
+  if(tag==='blockquote') block.innerHTML='&ZeroWidthSpace;';
+  else block.innerHTML='&ZeroWidthSpace;';
+  range.deleteContents(); range.insertNode(block);
+  const r2=document.createRange(); r2.setStart(block,block.childNodes.length); r2.collapse(true);
+  sel.removeAllRanges(); sel.addRange(r2);
+  schedNoteAutosave();
+}
+
+document.getElementById('npToolbar').addEventListener('click',e=>{
+  const btn=e.target.closest('.tb-btn'); if(!btn) return;
+  const cmd=btn.dataset.cmd, block=btn.dataset.block;
+  if(cmd) execCmd(cmd);
+  else if(block) insertBlock(block);
+});
+
+document.getElementById('tbTodo').onclick=()=>{
+  npEditor.focus();
+  const id='td-'+Date.now();
+  const html=`<div class="todo-item" contenteditable="false"><input type="checkbox" id="${id}"><span contenteditable="true"> New task</span></div>`;
+  execCmd('insertHTML',html);
+};
+
+// Checkbox toggle in editor
+npEditor.addEventListener('click',e=>{
+  if(e.target.type==='checkbox'){
+    const item=e.target.closest('.todo-item');
+    if(item){ item.classList.toggle('done',e.target.checked); schedNoteAutosave(); }
+  }
+});
+
+document.getElementById('tbHighlight').onclick=()=>{
+  const sel=window.getSelection(); if(!sel||!sel.toString()) return;
+  execCmd('insertHTML','<mark>'+sel.toString()+'</mark>');
+};
+
+document.getElementById('tbLink').onclick=()=>{
+  const url=prompt('Enter URL:','https://');
+  if(url) execCmd('createLink',url);
+};
+
+document.getElementById('tbTable').onclick=()=>{
+  const rows=parseInt(prompt('Rows?','3')||'3');
+  const cols=parseInt(prompt('Columns?','3')||'3');
+  if(!rows||!cols) return;
+  let html='<table><thead><tr>'+Array(cols).fill(0).map((_,i)=>`<th>Header ${i+1}</th>`).join('')+'</tr></thead><tbody>';
+  for(let r=0;r<rows-1;r++) html+='<tr>'+Array(cols).fill('<td>&ZeroWidthSpace;</td>').join('')+'</tr>';
+  html+='</tbody></table><p><br></p>';
+  execCmd('insertHTML',html);
+};
+
+// Toolbar active state
+npEditor.addEventListener('keyup',updateToolbarState);
+npEditor.addEventListener('mouseup',updateToolbarState);
+function updateToolbarState(){
+  document.querySelectorAll('.tb-btn[data-cmd]').forEach(btn=>{
+    try{ btn.classList.toggle('active',document.queryCommandState(btn.dataset.cmd)); }catch(e){}
+  });
+}
+
+// Keyboard shortcuts inside editor
+npEditor.addEventListener('keydown',e=>{
+  if(e.ctrlKey||e.metaKey){
+    if(e.key==='b'){ e.preventDefault(); execCmd('bold'); }
+    else if(e.key==='i'){ e.preventDefault(); execCmd('italic'); }
+    else if(e.key==='u'){ e.preventDefault(); execCmd('underline'); }
+    else if(e.key==='z'){ /* allow native undo */ }
+    else if(e.key==='s'){ e.preventDefault(); flushNote(); scheduleSave(); flashToast('Saved ✓'); }
+  }
+  if(e.key==='Escape'){ e.preventDefault(); closeNote(); }
+  // Markdown-style shortcuts
+  if(e.key===' '){
+    const sel=window.getSelection(); if(!sel.rangeCount) return;
+    const range=sel.getRangeAt(0); const node=range.startContainer;
+    if(node.nodeType===3){
+      const txt=node.textContent.slice(0,range.startOffset);
+      if(txt==='#'){ e.preventDefault(); node.textContent=node.textContent.slice(1); insertBlock('h1'); }
+      else if(txt==='##'){ e.preventDefault(); node.textContent=node.textContent.slice(2); insertBlock('h2'); }
+      else if(txt==='###'){ e.preventDefault(); node.textContent=node.textContent.slice(3); insertBlock('h3'); }
+      else if(txt==='>'){ e.preventDefault(); node.textContent=node.textContent.slice(1); insertBlock('blockquote'); }
+      else if(txt==='---'){ e.preventDefault(); node.textContent=''; execCmd('insertHorizontalRule'); }
+      else if(txt==='-'||txt==='*'){ e.preventDefault(); node.textContent=node.textContent.slice(txt.length); execCmd('insertUnorderedList'); }
+    }
+  }
+});
+
+/* ─── SIDE PANEL (node meta / edit) ─────── */
+function spRender(n){
+  if(!n){ spEl.innerHTML=`<div style="color:var(--muted);font-size:12px;padding:4px 0">Click a node to select. Double-click to open notes.</div>`; return; }
+  const path=bcPath(n.id).filter(x=>stIds.has(x.id));
+  spEl.innerHTML=`
+    <div class="sp-title">${esc(n.label||n.id)}</div>
+    <div class="sp-path">${path.map(x=>esc(x.label||x.id)).join(' › ')}</div>
+    <div class="sp-actions">
+      <button id="spOpen">📝 Open Notes</button>
+      <button id="spCenter">Center</button>
+      <button id="spDrill">Drill ↓</button>
+      <button id="spUp">Up</button>
     </div>
-    <div class="editor${editing?' active':''}" id="editor">
-      <h3 style="margin-top:10px">✏️ Edit Node</h3>
-      <div class="row"><label>Label</label><input id="edLabel" type="text" value="${escapeAttr(node.label||'')}"></div>
-      <div class="row"><label>Note</label><textarea id="edNote">${escapeHtml(node.note||'')}</textarea></div>
-      <div class="row"><label>Tags</label><input id="edTags" type="text" placeholder="comma or # separated" value="${escapeAttr((node.tags||[]).join(', '))}"></div>
-      <div class="row"><label>Color</label><div id="edColorWrap" class="palette"></div></div>
+    <div class="edit-section${editing?' active':''}" id="editSec">
+      <div class="row"><label>Label</label><input id="edLabel" type="text" value="${escA(n.label||'')}"></div>
+      <div class="row"><label>Color</label><div id="edPalette" class="palette"></div></div>
       <div class="row"><label>Line</label>
         <select id="edLine">
           <option value="solid">Solid</option>
@@ -910,316 +858,173 @@ function renderSidePanel(node){
           <option value="dotted">Dotted</option>
         </select>
       </div>
-      <div class="row"><label>Info</label><textarea id="edInfo" placeholder="One bullet per line">${escapeHtml(Array.isArray(node.info)?node.info.join('\n'):'')}</textarea></div>
-      <div class="actions">
-        <button class="btn-ok" id="btnSaveEdit">Save</button>
-        <button class="btn-warn" id="btnAddChild">+ Child</button>
-        <button class="btn-danger" id="btnDelete"${node.id===DATA.root.id?' disabled':''}>Delete</button>
+      <div class="node-actions">
+        <button class="btn-ok" id="spSave">Save</button>
+        <button class="btn-w" id="spAdd">+ Child</button>
+        <button class="btn-d" id="spDel"${n.id===DATA.root.id?' disabled':''}>Delete</button>
       </div>
-      <div class="persist">
-        <h3 style="margin:8px 0 4px">☁ Cloud &amp; Export</h3>
-        <div class="actions">
-          <button id="btnSaveCloud">Save to Cloud</button>
-          <button id="btnExportJSON">Export JSON</button>
-          <button id="btnExportHTML">Export HTML</button>
-          <button id="btnLock">🔒 Lock</button>
+      <div class="persist-sec">
+        <h4>☁ Sync & Export</h4>
+        <div class="acts">
+          <button id="spCloud">Save Cloud</button>
+          <button id="spExJSON">JSON</button>
+          <button id="spExHTML">HTML</button>
+          <button id="spLock">🔒 Lock</button>
         </div>
-        <div class="hint">Changes auto-save to cloud. Use Export HTML to keep a local backup.</div>
+        <div class="hint">Auto-saves after each edit. Export HTML for a local backup.</div>
       </div>
     </div>`;
 
   const $=id=>document.getElementById(id);
-  $('spCenter').onclick=()=>centerOnNode(node.id);
-  $('spDrill').onclick=()=>{ currentRootId=node.id; selectedId=node.id; updateBreadcrumb(); render(); fitToScreen(80); saveViewState(); };
+  $('spOpen').onclick=()=>openNote(n);
+  $('spCenter').onclick=()=>centerOn(n.id);
+  $('spDrill').onclick=()=>{ currentRootId=n.id; selectedId=n.id; updateBC(); render(); fitScreen(80); saveView(); };
   $('spUp').onclick=drillUp;
-  $('spClear').onclick=()=>{ selectedId=null; render(); renderSidePanel(null); saveViewState(); hideTip(); };
 
-  const edLabel=$('edLabel'),edNote=$('edNote'),edTags=$('edTags'),edInfo=$('edInfo'),edLine=$('edLine');
-  edLine.value=node.lineStyle||'solid';
-  let edColor=node.color||null;
+  const edLine=$('edLine'); edLine.value=n.lineStyle||'solid';
+  let edColor=n.color||null;
 
-  function renderPalette(){
-    const wrap=$('edColorWrap'); if(!wrap) return;
-    wrap.innerHTML=PALETTE.map(c=>`<button class="swatch${c===edColor?' active':''}" data-color="${c}" style="--swatch:${c}" title="${c}"></button>`).join('')
-      +`<button class="swatch none${!edColor?' active':''}" data-color="" title="No color">×</button>`;
-    wrap.querySelectorAll('.swatch').forEach(btn=>btn.onclick=()=>{ edColor=btn.dataset.color||null; renderPalette(); });
+  function drawPalette(){
+    const w=$('edPalette'); if(!w)return;
+    w.innerHTML=PALETTE.map(c=>`<button class="swatch${c===edColor?' active':''}" data-c="${c}" style="--sw:${c};background:${c}" title="${c}"></button>`).join('')
+      +`<button class="swatch none${!edColor?' active':''}" data-c="" title="None">×</button>`;
+    w.querySelectorAll('.swatch').forEach(b=>b.onclick=()=>{ edColor=b.dataset.c||null; drawPalette(); });
   }
-  renderPalette();
+  drawPalette();
 
-  $('btnSaveEdit').onclick=()=>{
-    applyUpdates(node.id,{ label:edLabel.value.trim()||node.label||'Untitled', note:edNote.value, tags:parseTags(edTags.value), info:parseLines(edInfo.value), color:edColor||undefined, lineStyle:edLine.value||'solid' });
-    saveViewState(); render(); renderSidePanel(nodeById.get(node.id));
-    scheduleSave(); flashHint('Updated ✓');
+  $('spSave').onclick=()=>{
+    const n2=nodeById.get(n.id); if(!n2)return;
+    n2.label=$('edLabel').value.trim()||n2.label||'Untitled';
+    n2.color=edColor||undefined; n2.lineStyle=edLine.value||'solid';
+    if(_noteNode&&_noteNode.id===n.id) npTitle.value=n2.label;
+    reindex(); saveView(); render(); spRender(nodeById.get(n.id)); scheduleSave(); flashToast('Updated ✓');
   };
-  $('btnAddChild').onclick=()=>{
-    const child={id:crypto.randomUUID(),label:'New Node',note:'Describe this item…',tags:[],color:edColor||null,lineStyle:edLine.value||'solid',children:[],info:[]};
-    addChild(node.id,child); saveViewState(); selectedId=child.id; render(); renderSidePanel(nodeById.get(child.id)); fitToScreen(80);
-    scheduleSave(); flashHint('Child added ✓');
+  $('spAdd').onclick=()=>{
+    const child={id:crypto.randomUUID(),label:'New Node',note:'',richNote:'',tags:[],color:edColor||null,lineStyle:edLine.value||'solid',children:[]};
+    const p=nodeById.get(n.id); if(!p)return; if(!Array.isArray(p.children))p.children=[]; p.children.push(child); collapsed.delete(n.id); reindex();
+    selectedId=child.id; saveView(); render(); spRender(nodeById.get(child.id)); fitScreen(80); scheduleSave(); flashToast('Child added ✓');
   };
-  $('btnDelete').onclick=()=>{
-    if(node.id===DATA.root.id) return;
-    if(!confirm(`Delete "${node.label||node.id}" and all its children?`)) return;
-    const parent=nodeById.get(node._parent);
-    deleteNode(node.id); selectedId=parent?parent.id:null;
-    render(); renderSidePanel(selectedId?nodeById.get(selectedId):null);
-    scheduleSave(); flashHint('Deleted ✓');
+  $('spDel').onclick=()=>{
+    if(n.id===DATA.root.id)return;
+    if(!confirm(`Delete "${n.label||n.id}" and all children?`))return;
+    const par=nodeById.get(n._parent); const p=nodeById.get(n._parent); if(!p)return;
+    p.children=(p.children||[]).filter(c=>c.id!==n.id);
+    (function w(x){ collapsed.delete(x.id); (x.children||[]).forEach(w); })(n);
+    reindex(); selectedId=par?par.id:null; if(openNoteId===n.id)closeNote();
+    render(); spRender(selectedId?nodeById.get(selectedId):null); scheduleSave(); flashToast('Deleted ✓');
   };
-  $('btnSaveCloud').onclick=async()=>{ try{ await saveToCloud(DATA); flashHint('Saved to cloud ✓'); }catch(e){ flashHint('⚠ Save failed'); }};
-  $('btnExportJSON').onclick=()=>exportJSON(DATA);
-  $('btnExportHTML').onclick=()=>exportHTML(DATA);
-  $('btnLock').onclick=lockApp;
-}
-
-/* ════════════════════════════════════════════
-   EDIT OPS
-   ════════════════════════════════════════════ */
-function applyUpdates(id,u){
-  const n=nodeById.get(id); if(!n) return;
-  if('label' in u) n.label=u.label;
-  if('note' in u) n.note=u.note;
-  if('tags' in u) n.tags=u.tags;
-  if('info' in u) n.info=u.info;
-  if('color' in u) n.color=u.color||undefined;
-  if('lineStyle' in u) n.lineStyle=u.lineStyle||'solid';
-  reindex();
-}
-function addChild(parentId,child){
-  const p=nodeById.get(parentId); if(!p) return;
-  if(!Array.isArray(p.children)) p.children=[];
-  p.children.push(child); collapsed.delete(parentId); reindex();
-}
-function deleteNode(id){
-  const n=nodeById.get(id); if(!n||id===DATA.root.id) return;
-  const p=nodeById.get(n._parent); if(!p) return;
-  p.children=(p.children||[]).filter(ch=>ch.id!==id);
-  (function walk(x){ collapsed.delete(x.id); (x.children||[]).forEach(walk); })(n);
-  reindex();
+  $('spCloud').onclick=async()=>{ flushNote(); try{await cloudSave(DATA);flashToast('Cloud saved ✓');}catch(e){flashToast('⚠ Save failed');} };
+  $('spExJSON').onclick=()=>exportJSON(DATA);
+  $('spExHTML').onclick=()=>exportHTML(DATA);
+  $('spLock').onclick=lockApp;
 }
 
-/* ════════════════════════════════════════════
-   BREADCRUMB
-   ════════════════════════════════════════════ */
-function updateBreadcrumb(){
-  const bc=document.getElementById('breadcrumb'); if(!bc) return;
-  const path=breadcrumbPath(currentRootId);
-  bc.innerHTML=path.map(n=>`<a href="#" data-id="${n.id}">${escapeHtml(n.label||n.id)}</a>`).join(' › ');
-  bc.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{
-    e.preventDefault(); currentRootId=a.dataset.id; selectedId=currentRootId;
-    render(); fitToScreen(80); saveViewState(); updateBreadcrumb();
-  }));
+/* ─── BREADCRUMB ─────────────────────────── */
+function updateBC(){
+  const bc=document.getElementById('breadcrumb'); if(!bc)return;
+  const path=bcPath(currentRootId);
+  bc.innerHTML=path.map(n=>`<a href="#" data-id="${n.id}">${esc(n.label||n.id)}</a>`).join(' › ');
+  bc.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{ e.preventDefault(); currentRootId=a.dataset.id; selectedId=currentRootId; render(); fitScreen(80); saveView(); updateBC(); }));
   document.title=(DATA.title?DATA.title+' — ':'')+'Niyaz Mind Map';
 }
 
-/* ════════════════════════════════════════════
-   SEARCH
-   ════════════════════════════════════════════ */
-let _searchText='';
-function matchesNode(n,q){ q=q.toLowerCase(); return (n.label||'').toLowerCase().includes(q)||(n.note||'').toLowerCase().includes(q)||((n.tags||[]).some(t=>t.toLowerCase().includes(q))); }
-function openToRevealMatches(q){
-  if(!q) return;
-  nodeById.forEach(n=>{ if(matchesNode(n,q)){ let p=nodeById.get(n._parent); while(p){ collapsed.delete(p.id); p=nodeById.get(p._parent); } }});
-}
+/* ─── SEARCH ─────────────────────────────── */
+let _sText='';
+function matchNode(n,q){ q=q.toLowerCase(); return (n.label||'').toLowerCase().includes(q)||(n.note||'').toLowerCase().includes(q)||((n.tags||[]).some(t=>t.toLowerCase().includes(q)))||(n.richNote||'').toLowerCase().includes(q); }
+function openForSearch(q){ if(!q)return; nodeById.forEach(n=>{ if(matchNode(n,q)){ let p=nodeById.get(n._parent); while(p){collapsed.delete(p.id);p=nodeById.get(p._parent);} } }); }
+const srchIn=document.getElementById('searchInput');
+srchIn.addEventListener('input',()=>{ _sText=srchIn.value.trim(); if(_sText)openForSearch(_sText); render(); });
+document.getElementById('btnFit').addEventListener('click',()=>fitScreen());
 
-const searchInput=document.getElementById('searchInput');
-searchInput.addEventListener('input',()=>{ _searchText=searchInput.value.trim(); if(_searchText) openToRevealMatches(_searchText); render(); });
-document.getElementById('btnClearSearch').addEventListener('click',()=>{ searchInput.value=''; _searchText=''; render(); });
+/* ─── ZOOM & PAN ─────────────────────────── */
+let panning=false, panS={x:0,y:0}, txS={x:0,y:0};
+svg.addEventListener('mousedown',e=>{ if(e.button!==0)return; panning=true; panS={x:e.clientX,y:e.clientY}; txS={...transform}; hideTip(); });
+window.addEventListener('mousemove',e=>{ if(!panning)return; setTx({x:txS.x+(e.clientX-panS.x),y:txS.y+(e.clientY-panS.y),k:transform.k}); });
+window.addEventListener('mouseup',()=>{ if(panning){panning=false;saveView();} });
+svg.addEventListener('wheel',e=>{ e.preventDefault(); hideTip(); const d=-(e.deltaY)/600; const nk=clamp(transform.k*(1+d),ZOOM_MIN,ZOOM_MAX); const pt=svgPt(e); setTx({x:transform.k*pt.x+transform.x-nk*pt.x,y:transform.k*pt.y+transform.y-nk*pt.y,k:nk}); saveView(); },{passive:false});
 
-/* ════════════════════════════════════════════
-   ZOOM & PAN (Mouse + Touch)
-   ════════════════════════════════════════════ */
-let isPanning=false,panStart={x:0,y:0},transStart={x:0,y:0};
+// Touch pinch
+let lpd=0;
+svg.addEventListener('touchstart',e=>{ if(e.touches.length===2){lpd=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);}else if(e.touches.length===1){panning=true;panS={x:e.touches[0].clientX,y:e.touches[0].clientY};txS={...transform};} },{passive:true});
+svg.addEventListener('touchmove',e=>{ if(e.touches.length===2){e.preventDefault();const d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);const mx=(e.touches[0].clientX+e.touches[1].clientX)/2,my=(e.touches[0].clientY+e.touches[1].clientY)/2;const nk=clamp(transform.k*(d/lpd),ZOOM_MIN,ZOOM_MAX);const pt=svgPt({clientX:mx,clientY:my});setTx({x:transform.k*pt.x+transform.x-nk*pt.x,y:transform.k*pt.y+transform.y-nk*pt.y,k:nk});lpd=d;}else if(e.touches.length===1&&panning){setTx({x:txS.x+(e.touches[0].clientX-panS.x),y:txS.y+(e.touches[0].clientY-panS.y),k:transform.k});} },{passive:false});
+svg.addEventListener('touchend',()=>{ if(panning){panning=false;saveView();} });
 
-svg.addEventListener('mousedown',e=>{ if(e.button!==0) return; isPanning=true; panStart={x:e.clientX,y:e.clientY}; transStart={...transform}; hideTip(); });
-window.addEventListener('mousemove',e=>{ if(!isPanning) return; setTransform({x:transStart.x+(e.clientX-panStart.x),y:transStart.y+(e.clientY-panStart.y),k:transform.k}); });
-window.addEventListener('mouseup',()=>{ if(isPanning){ isPanning=false; saveViewState(); }});
+document.getElementById('btnZoomIn').onclick=()=>{ setTx({...transform,k:clamp(transform.k*1.2,ZOOM_MIN,ZOOM_MAX)}); saveView(); };
+document.getElementById('btnZoomOut').onclick=()=>{ setTx({...transform,k:clamp(transform.k/1.2,ZOOM_MIN,ZOOM_MAX)}); saveView(); };
 
-svg.addEventListener('wheel',e=>{ e.preventDefault(); hideTip();
-  const delta=-(e.deltaY||e.wheelDelta)/600;
-  const newK=clamp(transform.k*(1+delta),ZOOM_MIN,ZOOM_MAX);
-  const pt=svgCursorPoint(e);
-  setTransform({x:transform.k*pt.x+transform.x-newK*pt.x,y:transform.k*pt.y+transform.y-newK*pt.y,k:newK});
-  saveViewState();
-},{passive:false});
-
-// Touch pinch/pan
-let lastPinchDist=0,lastTouchMid={x:0,y:0};
-svg.addEventListener('touchstart',e=>{
-  if(e.touches.length===2){
-    lastPinchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-    lastTouchMid={x:(e.touches[0].clientX+e.touches[1].clientX)/2,y:(e.touches[0].clientY+e.touches[1].clientY)/2};
-  } else if(e.touches.length===1){
-    isPanning=true; panStart={x:e.touches[0].clientX,y:e.touches[0].clientY}; transStart={...transform};
-  }
-},{passive:true});
-svg.addEventListener('touchmove',e=>{
-  if(e.touches.length===2){
-    e.preventDefault();
-    const dist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-    const mid={x:(e.touches[0].clientX+e.touches[1].clientX)/2,y:(e.touches[0].clientY+e.touches[1].clientY)/2};
-    const scale=dist/lastPinchDist;
-    const newK=clamp(transform.k*scale,ZOOM_MIN,ZOOM_MAX);
-    const pt=svgCursorPoint({clientX:mid.x,clientY:mid.y});
-    setTransform({x:transform.k*pt.x+transform.x-newK*pt.x,y:transform.k*pt.y+transform.y-newK*pt.y,k:newK});
-    lastPinchDist=dist; lastTouchMid=mid;
-  } else if(e.touches.length===1&&isPanning){
-    setTransform({x:transStart.x+(e.touches[0].clientX-panStart.x),y:transStart.y+(e.touches[0].clientY-panStart.y),k:transform.k});
-  }
-},{passive:false});
-svg.addEventListener('touchend',()=>{ if(isPanning){ isPanning=false; saveViewState(); }});
-
-document.getElementById('btnZoomIn').onclick=()=>{ setTransform({...transform,k:clamp(transform.k*1.2,ZOOM_MIN,ZOOM_MAX)}); saveViewState(); };
-document.getElementById('btnZoomOut').onclick=()=>{ setTransform({...transform,k:clamp(transform.k/1.2,ZOOM_MIN,ZOOM_MAX)}); saveViewState(); };
-
-/* ════════════════════════════════════════════
-   NAVIGATION
-   ════════════════════════════════════════════ */
-function drillUp(){
-  const cur=nodeById.get(currentRootId); if(cur&&cur._parent){ currentRootId=cur._parent; selectedId=currentRootId; updateBreadcrumb(); render(); fitToScreen(80); saveViewState(); }
-}
-function goRoot(){ currentRootId=DATA.root.id; selectedId=currentRootId; updateBreadcrumb(); render(); fitToScreen(80); saveViewState(); }
-
-document.getElementById('btnFit').addEventListener('click',()=>fitToScreen());
+/* ─── NAV ────────────────────────────────── */
+function drillUp(){ const c=nodeById.get(currentRootId); if(c&&c._parent){currentRootId=c._parent;selectedId=currentRootId;updateBC();render();fitScreen(80);saveView();} }
+function goRoot(){ currentRootId=DATA.root.id;selectedId=currentRootId;updateBC();render();fitScreen(80);saveView(); }
 document.getElementById('btnUp').addEventListener('click',drillUp);
 document.getElementById('btnRoot').addEventListener('click',goRoot);
 
-/* ════════════════════════════════════════════
-   THEME & EDIT TOGGLE
-   ════════════════════════════════════════════ */
+/* ─── THEME & EDIT ───────────────────────── */
 document.getElementById('btnTheme').addEventListener('click',()=>{
   const cur=document.documentElement.dataset.theme||'';
-  const next=cur==='light'?'dark':(cur==='dark'?'':'light');
-  if(next) document.documentElement.dataset.theme=next; else document.documentElement.removeAttribute('data-theme');
-  saveViewState();
+  const nxt=cur==='light'?'dark':(cur==='dark'?'':'light');
+  if(nxt) document.documentElement.dataset.theme=nxt; else document.documentElement.removeAttribute('data-theme');
+  saveView();
 });
-
 document.getElementById('btnEdit').addEventListener('click',()=>{
   editing=!editing;
   document.getElementById('btnEdit').textContent=editing?'✏️ Editing':'✏️ Edit';
-  saveViewState();
-  renderSidePanel(selectedId?nodeById.get(selectedId):null);
+  saveView(); spRender(selectedId?nodeById.get(selectedId):null);
 });
-
 if(persisted.theme) document.documentElement.dataset.theme=persisted.theme;
+if(editing) setTimeout(()=>{ const b=document.getElementById('btnEdit'); if(b) b.textContent='✏️ Editing'; },50);
 
-/* ════════════════════════════════════════════
-   HELP
-   ════════════════════════════════════════════ */
-const helpPanel=document.getElementById('helpPanel');
-document.getElementById('btnHelp').onclick=()=>{ helpPanel.style.display=helpPanel.style.display==='block'?'none':'block'; };
-document.getElementById('helpClose').onclick=()=>{ helpPanel.style.display='none'; };
+/* ─── HELP ───────────────────────────────── */
+const helpPanelEl=document.getElementById('helpPanel');
+document.getElementById('btnHelp').onclick=()=>{ helpPanelEl.style.display=helpPanelEl.style.display==='block'?'none':'block'; };
+document.getElementById('helpClose').onclick=()=>{ helpPanelEl.style.display='none'; };
 
-/* ════════════════════════════════════════════
-   KEYBOARD
-   ════════════════════════════════════════════ */
+/* ─── KEYBOARD ───────────────────────────── */
 window.addEventListener('keydown',e=>{
-  if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+  if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  if(document.activeElement.contentEditable==='true') return;
   const cur=selectedId?nodeById.get(selectedId):null;
-  if(e.key==='f'||e.key==='F') fitToScreen();
-  if(e.key==='h'||e.key==='H') helpPanel.style.display=helpPanel.style.display==='block'?'none':'block';
-  if(e.key==='Enter'&&selectedId) centerOnNode(selectedId);
-  if(!cur) return;
-  if(e.key==='ArrowUp'){ const p=nodeById.get(cur._parent); if(p&&subtreeIds.has(p.id)){ selectedId=p.id; updateBreadcrumb(); render(); renderSidePanel(p); }}
-  else if(e.key==='ArrowDown'){ const ch=visibleChildren(cur).filter(c=>subtreeIds.has(c.id)); if(ch.length){ selectedId=ch[0].id; updateBreadcrumb(); render(); renderSidePanel(nodeById.get(selectedId)); }}
-  else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
-    const parent=nodeById.get(cur._parent); if(parent){ const sibs=visibleChildren(parent).filter(c=>subtreeIds.has(c.id)); const idx=sibs.findIndex(n=>n.id===cur.id); if(idx>=0){ const dir=e.key==='ArrowLeft'?-1:1; const next=(idx+dir+sibs.length)%sibs.length; selectedId=sibs[next].id; updateBreadcrumb(); render(); renderSidePanel(nodeById.get(selectedId)); }}
-  }
-  else if(e.key===' '){
-    if(cur.children?.length){ if(collapsed.has(cur.id)) collapsed.delete(cur.id); else collapsed.add(cur.id); saveViewState(); render(); }
-  }
+  if(e.key==='f'||e.key==='F') fitScreen();
+  if(e.key==='h'||e.key==='H') helpPanelEl.style.display=helpPanelEl.style.display==='block'?'none':'block';
+  if(e.key==='Enter'&&selectedId) centerOn(selectedId);
+  if(e.key==='Escape') closeNote();
+  if(!cur)return;
+  if(e.key==='n'||e.key==='N'){ openNote(cur); return; }
+  if(e.key==='ArrowUp'){ const p=nodeById.get(cur._parent); if(p&&stIds.has(p.id)){selectedId=p.id;updateBC();render();spRender(p);} }
+  else if(e.key==='ArrowDown'){ const ch=visC(cur).filter(c=>stIds.has(c.id)); if(ch.length){selectedId=ch[0].id;updateBC();render();spRender(nodeById.get(selectedId));} }
+  else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){ const par=nodeById.get(cur._parent); if(par){const sibs=visC(par).filter(c=>stIds.has(c.id));const idx=sibs.findIndex(n=>n.id===cur.id);if(idx>=0){const dir=e.key==='ArrowLeft'?-1:1;const nx=(idx+dir+sibs.length)%sibs.length;selectedId=sibs[nx].id;updateBC();render();spRender(nodeById.get(selectedId));}} }
+  else if(e.key===' '){ if(cur.children?.length){if(collapsed.has(cur.id))collapsed.delete(cur.id);else collapsed.add(cur.id);saveView();render();} }
 });
 
-/* ════════════════════════════════════════════
-   SVG BACKGROUND INTERACTIONS
-   ════════════════════════════════════════════ */
-svg.addEventListener('dblclick',e=>{
-  if(e.target.closest&&e.target.closest('.node')) return;
-  hideTip(); currentRootId=DATA.root.id; selectedId=null; updateBreadcrumb(); render(); fitToScreen(80); saveViewState();
-});
-svg.addEventListener('click',e=>{ if(e.target.closest&&e.target.closest('.node')) return; hideTip(); });
+/* ─── SVG BG ─────────────────────────────── */
+svg.addEventListener('dblclick',e=>{ if(e.target.closest&&e.target.closest('.node'))return; hideTip();currentRootId=DATA.root.id;selectedId=null;updateBC();render();fitScreen(80);saveView(); });
+svg.addEventListener('click',e=>{ if(e.target.closest&&e.target.closest('.node'))return; hideTip(); });
 
-/* ════════════════════════════════════════════
-   DEEP LINKS
-   ════════════════════════════════════════════ */
-function applyHash(){
-  const raw=(location.hash||'').replace(/^#/,''); if(!raw) return;
-  const params=new URLSearchParams(raw.includes('=')?raw:`sub=${raw}`);
-  const sub=params.get('sub');
-  if(sub&&nodeById.has(sub)){ currentRootId=sub; selectedId=sub; updateBreadcrumb(); render(); fitToScreen(80); saveViewState(); }
-}
+/* ─── DEEP LINK ──────────────────────────── */
+function applyHash(){ const raw=(location.hash||'').replace(/^#/,'');if(!raw)return;const p=new URLSearchParams(raw.includes('=')?raw:`sub=${raw}`);const s=p.get('sub');if(s&&nodeById.has(s)){currentRootId=s;selectedId=s;updateBC();render();fitScreen(80);saveView();} }
 window.addEventListener('hashchange',applyHash);
 
-/* ════════════════════════════════════════════
-   EXPORT
-   ════════════════════════════════════════════ */
-function exportJSON(dataObj){
-  const blob=new Blob([JSON.stringify(dataObj,null,2)],{type:'application/json'});
-  triggerDownload(blob,(DATA.title||'mindmap')+'.json');
-}
-function exportHTML(dataObj){
-  const doc=document.documentElement.cloneNode(true);
-  const script=doc.querySelector('script#mindmap-data[type="application/json"]');
-  if(script) script.textContent='\n'+JSON.stringify(dataObj,null,2)+'\n';
-  triggerDownload(new Blob(['<!DOCTYPE html>\n'+doc.outerHTML],{type:'text/html'}),'niyaz_mindmap.html');
-  flashHint('HTML exported ✓');
-}
-function triggerDownload(blob,filename){
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename;
-  document.body.appendChild(a); a.click();
-  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },0);
-}
+/* ─── EXPORT ─────────────────────────────── */
+function exportJSON(d){ dl(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),(DATA.title||'mindmap')+'.json'); }
+function exportHTML(d){ const doc=document.documentElement.cloneNode(true); const s=doc.querySelector('script#mindmap-data[type="application/json"]'); if(s) s.textContent='\n'+JSON.stringify(d,null,2)+'\n'; dl(new Blob(['<!DOCTYPE html>\n'+doc.outerHTML],{type:'text/html'}),'niyaz_mindmap.html'); flashToast('HTML exported ✓'); }
+function dl(blob,fn){ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fn;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},0); }
 
-/* ════════════════════════════════════════════
-   FLASH TOAST
-   ════════════════════════════════════════════ */
-let _flashTimer=null;
-function flashHint(msg){
-  let el=document.querySelector('.flash');
-  if(!el){ el=document.createElement('div'); el.className='flash'; document.body.appendChild(el); }
-  el.textContent=msg; el.style.opacity='1';
-  if(_flashTimer) clearTimeout(_flashTimer);
-  _flashTimer=setTimeout(()=>{ el.style.transition='opacity .4s ease'; el.style.opacity='0'; setTimeout(()=>el.remove(),400); _flashTimer=null; },1800);
-}
+/* ─── TOAST ──────────────────────────────── */
+let _tTimer=null;
+function flashToast(msg){ let el=document.querySelector('.toast'); if(!el){el=document.createElement('div');el.className='toast';document.body.appendChild(el);} el.textContent=msg;el.style.opacity='1'; if(_tTimer)clearTimeout(_tTimer); _tTimer=setTimeout(()=>{el.style.transition='opacity .4s';el.style.opacity='0';setTimeout(()=>el.remove(),400);_tTimer=null;},1800); }
 
-/* ════════════════════════════════════════════
-   LOCK APP
-   ════════════════════════════════════════════ */
-function lockApp(){
-  localStorage.removeItem(LS_SESSION);
-  appEl.style.display='none';
-  lockScreen.style.display='flex';
-  passInput.value='';
-  lockError.textContent='';
-  lockStatus.textContent='Enter passkey to resume.';
-  unlockBtn.disabled=false;
-  unlocked=false;
-}
+/* ─── LOCK ───────────────────────────────── */
+function lockApp(){ closeNote(); localStorage.removeItem(LS_SESSION); appEl.className=''; lockEl.style.display='flex'; passIn.value=''; lockErr.textContent=''; lockSt.textContent='Enter passkey to resume.'; unlockB.disabled=false; unlocked=false; }
+window.addEventListener('beforeunload',()=>{ if(unlocked){try{flushNote();localStorage.setItem(LS_CACHE,JSON.stringify(DATA));}catch(e){} localStorage.removeItem(LS_SESSION);} });
 
-// Auto-lock on visibility hidden (optional — comment out if unwanted)
-// document.addEventListener('visibilitychange',()=>{ if(document.hidden) lockApp(); });
-
-/* ════════════════════════════════════════════
-   AUTO-SAVE on page close
-   ════════════════════════════════════════════ */
-window.addEventListener('beforeunload',()=>{
-  if(unlocked){
-    try{ localStorage.setItem(LS_DATA,JSON.stringify(DATA)); }catch(e){}
-    localStorage.removeItem(LS_SESSION); // fresh login next visit for security
-  }
-});
-
-/* ════════════════════════════════════════════
-   INIT
-   ════════════════════════════════════════════ */
+/* ─── INIT ───────────────────────────────── */
 function init(){
-  updateBreadcrumb();
-  currentRootId=persisted.currentRootId||DATA.root.id;
+  currentRootId=persisted.rootId||DATA.root.id;
   if(!nodeById.has(currentRootId)) currentRootId=DATA.root.id;
-  render();
-  if(persisted.transform) setTransform(persisted.transform); else fitToScreen(80);
+  updateBC(); render();
+  if(persisted.transform) setTx(persisted.transform); else fitScreen(80);
   if(location.hash) applyHash();
-  if(editing){ document.getElementById('btnEdit').textContent='✏️ Editing'; }
-  renderSidePanel(selectedId?nodeById.get(selectedId):null);
-  setSyncStatus('ok','Ready');
+  spRender(selectedId?nodeById.get(selectedId):null);
+  syncStatus('ok','Ready');
 }
 
 })();
