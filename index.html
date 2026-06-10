@@ -346,6 +346,8 @@ svg{width:100%;height:100%;background:radial-gradient(800px circle at 38% 28%,co
 .npanel{background:var(--panel);border-left:1px solid var(--border);display:none;flex-direction:column;overflow:hidden}
 .npanel.open{display:flex}
 .npanel.fs{position:fixed;inset:0;z-index:500;border:none}
+/* when opened from home view — overlays the whole screen */
+.npanel.home-note{position:fixed;inset:0;z-index:500;border:none;display:flex;flex-direction:column}
 .npanel.fs .np-editor-wrap{padding:24px min(80px,8vw)}
 .npanel.fs .nped{max-width:820px;margin:0 auto;font-size:15.5px;line-height:1.85}
 .npanel.readmode .np-toolbar{display:none}
@@ -796,13 +798,16 @@ function buildWFItem(n,depth,q,matches){
   const acts=document.createElement('div');acts.className='wf-actions';
   if(depth===0){
     const mapB=document.createElement('button');mapB.className='wa-btn map-btn';mapB.textContent='🗺 Map';mapB.title='Open as mind map (M)';
-    mapB.onclick=e=>{e.stopPropagation();showMap(n.id);};acts.appendChild(mapB);
+    mapB.onclick=e=>{e.stopPropagation();showMap(n.id);};
+    mapB.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();showMap(n.id);});
+    acts.appendChild(mapB);
   }
   const noteB=document.createElement('button');
   noteB.className='wa-btn note-btn'+(hasNote(n)?' has':'');
   noteB.textContent=hasNote(n)?'📝 Notes ●':'📝 Notes';
   noteB.title='Open notes (N)';
   noteB.onclick=e=>{e.stopPropagation();_wfFocusId=n.id;openNoteHome(n);};
+  noteB.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();_wfFocusId=n.id;openNoteHome(n);});
   acts.appendChild(noteB);
   const addB=document.createElement('button');addB.className='wa-btn';addB.textContent='+ Child';
   addB.onclick=e=>{e.stopPropagation();addChildInline(n,item);};acts.appendChild(addB);
@@ -842,6 +847,16 @@ function buildWFItem(n,depth,q,matches){
 
   // single click on label: depth 0 → map, deeper → notes
   lbl.addEventListener('click',e=>{
+    e.stopPropagation();
+    document.querySelectorAll('.wf-row.focused').forEach(r=>r.classList.remove('focused'));
+    row.classList.add('focused');_wfFocusId=n.id;
+    if(depth===0)showMap(n.id);
+    else openNoteHome(n);
+  });
+
+  // Mobile touch: tap anywhere on text area triggers action (since hover not available)
+  textDiv.addEventListener('touchend',e=>{
+    // only fire if not a scroll
     e.stopPropagation();
     document.querySelectorAll('.wf-row.focused').forEach(r=>r.classList.remove('focused'));
     row.classList.add('focused');_wfFocusId=n.id;
@@ -1264,15 +1279,28 @@ function openNote(n){
   nped.innerHTML=n.richNote||'';
   renderTodos(n.todos||[]);updateWC();
   npSS.textContent='Saved ✓';npSS.className='np-ss saved';
-  npanel.classList.add('open');
-  if(curView==='map')mapBody.classList.add('side');
+  if(curView==='home'){
+    // From home: show as full-screen overlay, add back button behaviour
+    npanel.classList.add('open','home-note');
+    npanel.classList.remove('fs');
+  } else {
+    npanel.classList.add('open');
+    npanel.classList.remove('home-note');
+    mapBody.classList.add('side');
+  }
   if(isRead){npanel.classList.add('readmode');nped.contentEditable='false';}
   else{npanel.classList.remove('readmode');nped.contentEditable='true';}
   updateReadBtn();setTimeout(()=>{if(!isRead)nped.focus();},60);
 }
 function closeNote(){
-  flushNote();npanel.classList.remove('open','fs','readmode');mapBody.classList.remove('side');
-  isFS=false;noteId=null;_noteNode=null;document.getElementById('btnFS').textContent='⛶';
+  const wasHome=npanel.classList.contains('home-note');
+  flushNote();
+  npanel.classList.remove('open','fs','readmode','home-note');
+  mapBody.classList.remove('side');
+  isFS=false;noteId=null;_noteNode=null;
+  document.getElementById('btnFS').textContent='⛶';
+  // if we came from home, re-render home to show updated note indicator
+  if(wasHome) renderWFTree();
 }
 function flushNote(){
   if(!_noteNode)return;const n=NBY.get(_noteNode.id);if(!n)return;
