@@ -189,9 +189,27 @@ button:focus,select:focus,input:focus{border-color:var(--accent);box-shadow:0 0 
 .home-add-top.editing .add-txt{display:none}
 .home-add-top.editing .add-icon{display:none}
 
-/* keyboard hint strip at bottom */
+/* keyboard hint strip at bottom — hidden on mobile to save space */
 .home-kbd-hint{position:fixed;bottom:0;left:0;right:0;z-index:20;padding:6px 28px;font-size:11px;color:var(--muted);background:color-mix(in oklab,var(--bg) 85%,transparent);backdrop-filter:blur(8px);border-top:1px solid var(--border);display:flex;gap:16px;flex-wrap:wrap}
 .home-kbd-hint kbd{font-family:var(--mono);font-size:10px;background:var(--panel2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;color:var(--text2)}
+
+/* FAB — floating add button, mobile only */
+#homeFAB{display:none;position:fixed;bottom:16px;right:16px;z-index:30;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:26px;line-height:1;cursor:pointer;box-shadow:0 4px 20px var(--sh);align-items:center;justify-content:center;transition:transform .15s,opacity .15s}
+#homeFAB:active{transform:scale(.93)}
+
+/* mobile home: actions always visible, bigger tap targets */
+@media(max-width:640px){
+  .home-kbd-hint{display:none}
+  #homeFAB{display:flex}
+  .home-wrap{padding:20px 14px 80px}
+  .wf-actions{opacity:1!important;gap:4px}
+  .wa-btn{padding:4px 8px;font-size:12px}
+  .wf-section > .wf-item > .wf-row .wf-label{font-size:15px}
+  .wf-row{padding:5px 4px}
+  /* bigger tap zone for bullet/toggle */
+  .wf-bullet-wrap{width:32px;padding-top:6px}
+  .wf-toggle{opacity:.7!important;font-size:10px}
+}
 
 /* ══════════════════════════════════════
    MAP VIEW
@@ -232,13 +250,64 @@ svg{width:100%;height:100%;background:radial-gradient(800px circle at 38% 28%,co
 .tt-note{color:var(--muted);font-size:11px;line-height:1.45;max-height:55px;overflow:hidden}
 .tt-tags{color:var(--accent);font-size:11px;margin-top:4px}
 .tt-links{color:var(--link);font-size:11px;margin-top:3px}
-/* floating node panel in map */
-.spanel{position:absolute;right:14px;top:14px;z-index:5;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:12px 14px;width:min(290px,86vw);max-height:calc(100vh - 120px);overflow-y:auto;box-shadow:0 12px 36px var(--sh);scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-.sp-title{font-weight:700;font-size:13px;margin-bottom:3px}
-.sp-path{font-size:11px;color:var(--muted);margin-bottom:8px}
-.sp-btns{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:2px}
-.sp-btns button{padding:5px 8px;font-size:12px}
-.sp-edit{display:none;margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+/* ── FLOATING NODE POPUP (replaces side panel, works on mobile) ── */
+.spanel{
+  position:fixed;z-index:200;
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:16px;padding:0;
+  width:min(340px,calc(100vw - 24px));
+  max-height:min(80vh,540px);
+  overflow-y:auto;
+  box-shadow:0 16px 48px var(--sh);
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  display:none;
+  animation:popIn .18s ease;
+}
+.spanel.open{display:block}
+@keyframes popIn{from{opacity:0;transform:scale(.95) translateY(6px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@media(max-width:640px){
+  .spanel.open{animation:slideUp .22s ease;border-radius:16px 16px 0 0!important}
+}
+
+/* popup header */
+.sp-pop-hdr{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 14px 10px;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--panel);z-index:1;
+  border-radius:16px 16px 0 0;
+}
+.sp-pop-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--accent)}
+.sp-title{font-weight:700;font-size:13.5px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 5px;border-radius:5px;line-height:1;flex-shrink:0}
+.sp-close:hover{color:var(--text);background:var(--panel2)}
+
+/* popup body */
+.sp-pop-body{padding:10px 14px 14px}
+.sp-path{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.4}
+
+/* action grid */
+.sp-btns{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.sp-btns button{
+  padding:9px 8px;font-size:13px;text-align:center;
+  border-radius:9px;border:1px solid var(--border);
+  background:var(--panel2);color:var(--text);
+  cursor:pointer;transition:background .1s,border-color .1s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  font-family:inherit;
+}
+.sp-btns button:hover{background:var(--panel3);border-color:var(--text2)}
+.sp-btns button:active{transform:scale(.97)}
+.sp-btns .full{grid-column:1/-1}
+.sp-btns .accent-btn{color:var(--accent);border-color:color-mix(in oklab,var(--accent) 35%,transparent)}
+.sp-btns .accent-btn:hover{background:color-mix(in oklab,var(--accent) 12%,transparent)}
+.sp-btns .link-btn{color:var(--link);border-color:color-mix(in oklab,var(--link) 35%,transparent)}
+.sp-btns .link-btn:hover{background:color-mix(in oklab,var(--link) 10%,transparent)}
+.sp-btns .danger-btn{color:var(--danger);border-color:color-mix(in oklab,var(--danger) 30%,transparent)}
+.sp-btns .danger-btn:hover{background:color-mix(in oklab,var(--danger) 8%,transparent)}
+
+.sp-edit{display:none;margin-top:4px;border-top:1px dashed var(--border);padding-top:10px}
 .sp-edit.on{display:block}
 .erow{display:grid;grid-template-columns:60px 1fr;gap:6px;margin:5px 0;align-items:start}
 .erow label{font-size:11px;color:var(--muted);padding-top:6px}
@@ -385,6 +454,8 @@ svg{width:100%;height:100%;background:radial-gradient(800px circle at 38% 28%,co
       <span><kbd>E</kbd> rename</span>
       <span><kbd>Del</kbd> delete</span>
     </div>
+    <!-- Mobile FAB: floating add button -->
+    <button id="homeFAB" title="Add topic" aria-label="Add topic">+</button>
   </div>
 
   <!-- MAP VIEW -->
@@ -426,7 +497,10 @@ svg{width:100%;height:100%;background:radial-gradient(800px circle at 38% 28%,co
           <div class="tt-tags" id="ttG"></div>
           <div class="tt-links" id="ttL"></div>
         </div>
-        <aside class="spanel" id="spanel"></aside>
+        <!-- Floating node popup -->
+        <aside class="spanel" id="spanel" role="dialog" aria-label="Node actions"></aside>
+        <!-- Click-outside overlay -->
+        <div id="spOverlay" style="display:none;position:fixed;inset:0;z-index:199" onclick="document.getElementById('spanel').classList.remove('open');document.getElementById('spOverlay').style.display='none'"></div>
         <div class="helppanel" id="helppanel">
           <button class="hclose" id="hclose">✕</button>
           <h4>Map shortcuts</h4>
@@ -985,11 +1059,11 @@ function renderMap(){
       if(linkMode){handleLinkClick(n.id);return;}
       const isC=e.target.tagName.toLowerCase()==='circle'&&e.target.getAttribute('r')===String(NR)&&(n.children?.length||0)>0;
       if(cT2)clearTimeout(cT2);pC2={id:n.id,isC,cx:e.clientX,cy:e.clientY};
-      cT2=setTimeout(()=>{cT2=null;const nd=NBY.get(pC2.id);if(!nd)return;if(pC2.isC){if(collapsed.has(nd.id))collapsed.delete(nd.id);else collapsed.add(nd.id);saveV();renderMap();spRender(selId?NBY.get(selId):null);hideTip();}else{selId=nd.id;saveV();renderMap();spRender(nd);showTip(nd,pC2.cx,pC2.cy);}pC2=null;},DBLD);
+      cT2=setTimeout(()=>{cT2=null;const nd=NBY.get(pC2.id);if(!nd)return;if(pC2.isC){if(collapsed.has(nd.id))collapsed.delete(nd.id);else collapsed.add(nd.id);saveV();renderMap();spClose();hideTip();}else{selId=nd.id;saveV();renderMap();spRender(nd,pC2.cx,pC2.cy);showTip(nd,pC2.cx,pC2.cy);}pC2=null;},DBLD);
     });
-    g.addEventListener('dblclick',e=>{e.stopPropagation();if(cT2){clearTimeout(cT2);cT2=null;}if(linkMode)return;selId=n.id;renderMap();spRender(n);openNote(n);});
+    g.addEventListener('dblclick',e=>{e.stopPropagation();if(cT2){clearTimeout(cT2);cT2=null;}if(linkMode)return;selId=n.id;renderMap();spClose();openNote(n);});
     let lTap=0;
-    g.addEventListener('touchend',e=>{if(linkMode){e.preventDefault();handleLinkClick(n.id);return;}const now=Date.now();if(now-lTap<300){e.preventDefault();if(cT2){clearTimeout(cT2);cT2=null;}selId=n.id;renderMap();spRender(n);openNote(n);}else{if(cT2)clearTimeout(cT2);pC2={id:n.id,isC:false,cx:0,cy:0};cT2=setTimeout(()=>{cT2=null;selId=n.id;saveV();renderMap();spRender(NBY.get(n.id));pC2=null;},DBLD);}lTap=now;});
+    g.addEventListener('touchend',e=>{if(linkMode){e.preventDefault();handleLinkClick(n.id);return;}const now=Date.now();if(now-lTap<300){e.preventDefault();if(cT2){clearTimeout(cT2);cT2=null;}selId=n.id;renderMap();spClose();openNote(n);}else{if(cT2)clearTimeout(cT2);const tx2=e.changedTouches[0];pC2={id:n.id,isC:false,cx:tx2?tx2.clientX:200,cy:tx2?tx2.clientY:300};cT2=setTimeout(()=>{cT2=null;selId=n.id;saveV();renderMap();spRender(NBY.get(n.id),pC2.cx,pC2.cy);pC2=null;},DBLD);}lTap=now;});
     g.addEventListener('mouseenter',e=>showTip(n,e.clientX,e.clientY));
     g.addEventListener('mousemove',e=>{if(ttip.style.display==='block')posTip(e.clientX,e.clientY);});
     g.addEventListener('mouseleave',hideTip);
@@ -1008,49 +1082,170 @@ function cancelLinkMode(){linkMode=false;linkSrcId=null;const bn=document.getEle
 document.getElementById('linkCancel').onclick=cancelLinkMode;
 function handleLinkClick(tid){if(tid===linkSrcId){cancelLinkMode();return;}if(addLink(linkSrcId,tid)){const tn=NBY.get(tid);toast(`🔗 Linked → ${tn?tn.label:tid}`);schedSave();}else toast('Already linked');cancelLinkMode();renderMap();spRender(NBY.get(selId||linkSrcId));}
 
-/* ── SIDE PANEL (MAP) ── */
-function spRender(n){
+/* ── FLOATING NODE POPUP ── */
+function spClose(){
+  const sp=document.getElementById('spanel');
+  const ov=document.getElementById('spOverlay');
+  if(sp)sp.classList.remove('open');
+  if(ov)ov.style.display='none';
+}
+
+function spOpen(anchorX, anchorY){
+  const sp=document.getElementById('spanel');
+  const ov=document.getElementById('spOverlay');
+  if(!sp)return;
+  sp.classList.add('open');
+  if(ov)ov.style.display='block';
+
+  const vw=window.innerWidth, vh=window.innerHeight;
+  const isMobile=vw<=640;
+
+  if(isMobile){
+    // On mobile: fixed bottom sheet — always at bottom, full width, never covers node
+    sp.style.position='fixed';
+    sp.style.left='0';
+    sp.style.right='0';
+    sp.style.bottom='0';
+    sp.style.top='auto';
+    sp.style.width='100%';
+    sp.style.maxWidth='100%';
+    sp.style.borderRadius='16px 16px 0 0';
+    sp.style.maxHeight='70vh';
+  } else {
+    // Desktop: float beside the node, offset so it never covers the node circle
+    const pw=Math.min(320, vw-24);
+    sp.style.position='fixed';
+    sp.style.width=pw+'px';
+    sp.style.maxWidth=pw+'px';
+    sp.style.borderRadius='14px';
+    sp.style.bottom='';
+    sp.style.right='';
+
+    // Try right of node first
+    let left=anchorX+28;
+    let top=anchorY-60;
+    // If it goes off right edge, try left of node
+    if(left+pw>vw-8) left=anchorX-pw-28;
+    // If still off left edge, center horizontally
+    if(left<8) left=Math.max(8, vw/2-pw/2);
+    // Clamp vertical
+    if(top<8) top=8;
+    if(top+400>vh-8) top=Math.max(8, vh-408);
+
+    sp.style.left=left+'px';
+    sp.style.top=top+'px';
+  }
+}
+
+function spRender(n, anchorX, anchorY){
   const sp=document.getElementById('spanel');if(!sp)return;
-  if(!n){sp.innerHTML=`<div style="color:var(--muted);font-size:12px;line-height:1.6">Click node to select.<br>Dbl-click to open notes.<br><b>L</b> to link nodes.</div>`;return;}
+  if(!n){spClose();return;}
+
   const lnks=getLinksFor(n.id);
-  const linksHtml=lnks.length?`<div class="links-section"><h5>🔗 Cross-links (${lnks.length})</h5>${lnks.map(l=>{const oid=l.from===n.id?l.to:l.from;const on=NBY.get(oid);return `<div class="link-item"><span>${esc(on?on.label:oid)}</span><button class="lgo" data-goto="${oid}">Go</button><button class="lrm" data-rmlink="${l.id}">✕</button></div>`;}).join('')}</div>`:'';
+  const nodeColor=n.color||'var(--accent)';
+  const pathStr=bcpath(n.id).filter(x=>stIds.has(x.id)).map(x=>esc(x.label||x.id)).join(' › ');
+
+  const linksHtml=lnks.length?`
+    <div class="links-section" style="margin-top:8px;border-top:1px dashed var(--border);padding-top:8px">
+      <h5 style="font-size:10.5px;color:var(--link);margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px">🔗 Cross-links (${lnks.length})</h5>
+      ${lnks.map(l=>{const oid=l.from===n.id?l.to:l.from;const on=NBY.get(oid);return `<div class="link-item"><span>${esc(on?on.label:oid)}</span><button class="lgo" data-goto="${oid}">Go</button><button class="lrm" data-rmlink="${l.id}">✕</button></div>`;}).join('')}
+    </div>`:'';
+
   sp.innerHTML=`
-    <div class="sp-title">${esc(n.label||n.id)}</div>
-    <div class="sp-path">${bcpath(n.id).filter(x=>stIds.has(x.id)).map(x=>esc(x.label||x.id)).join(' › ')}</div>
-    <div class="sp-btns">
-      <button id="spNote">📝 Notes</button><button id="spCtr">Center</button>
-      <button id="spDrill">Drill ↓</button><button id="spUp">Up ↑</button>
-      <button class="blink" id="spLink">🔗 Link</button>
+    <div class="sp-pop-hdr">
+      <div class="sp-pop-dot" style="background:${nodeColor}"></div>
+      <div class="sp-title">${esc(n.label||n.id)}</div>
+      <button class="sp-close" id="spCloseBtn" aria-label="Close">✕</button>
     </div>
-    ${linksHtml}
-    <div class="sp-edit${editing?' on':''}" id="spEdit">
-      <div class="erow"><label>Label</label><input id="edLbl" type="text" value="${escA(n.label||'')}"></div>
-      <div class="erow"><label>Color</label><div id="edPal" class="palette"></div></div>
-      <div class="erow"><label>Line</label><select id="edLine"><option value="solid">Solid</option><option value="dashed">Dashed</option><option value="dotted">Dotted</option></select></div>
-      <div class="eacts">
-        <button class="bok" id="spSave">Save</button>
-        <button class="bwarn" id="spAdd">+ Child</button>
-        <button class="bdel" id="spDel"${n.id===DATA.root.id?' disabled':''}>Delete</button>
+    <div class="sp-pop-body">
+      <div class="sp-path">${pathStr}</div>
+      <!-- Action grid -->
+      <div class="sp-btns">
+        <button id="spNote" class="accent-btn">📝 Notes</button>
+        <button id="spCtr">⊙ Center</button>
+        <button id="spDrill">↓ Drill in</button>
+        <button id="spUp">↑ Up</button>
+        <button id="spLink" class="link-btn full">🔗 Link to another node</button>
+        <button id="spAdd" class="full">＋ Add child node</button>
       </div>
-      <div class="sp-cloud"><h5>Sync & Export</h5><div class="acts">
-        <button id="spCloud">☁ Save</button><button id="spJSON">JSON</button><button id="spHTML">HTML</button><button id="spLock">🔒 Lock</button>
-      </div><div class="hint">Auto-saves. Export HTML for local backup.</div></div>
+      ${linksHtml}
+      <!-- Edit section -->
+      <div class="sp-edit on" id="spEdit">
+        <div class="erow"><label>Label</label><input id="edLbl" type="text" value="${escA(n.label||'')}"></div>
+        <div class="erow"><label>Color</label><div id="edPal" class="palette"></div></div>
+        <div class="erow"><label>Line</label>
+          <select id="edLine">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+          </select>
+        </div>
+        <div class="eacts">
+          <button class="bok" id="spSave">Save changes</button>
+          <button class="bdel" id="spDel"${(n.id===DATA.root.id||n.id===mapRootId)?' disabled':''}>🗑 Delete</button>
+        </div>
+        <div class="sp-cloud" style="margin-top:9px;border-top:1px dashed var(--border);padding-top:9px">
+          <h5 style="font-size:10.5px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Sync & Export</h5>
+          <div class="acts" style="display:flex;gap:5px;flex-wrap:wrap">
+            <button id="spCloud">☁ Save</button>
+            <button id="spJSON">JSON</button>
+            <button id="spHTML">HTML</button>
+            <button id="spLock">🔒 Lock</button>
+          </div>
+          <div class="hint">Auto-saves after edits. Export HTML for local backup.</div>
+        </div>
+      </div>
     </div>`;
+
   const $=id=>document.getElementById(id);
-  $('spNote').onclick=()=>openNote(n);$('spCtr').onclick=()=>centerOn(n.id);
-  $('spDrill').onclick=()=>{mapRootId=n.id;selId=n.id;updateTrail(n.id);renderMap();fitScreen(80);saveV();};
-  $('spUp').onclick=()=>{const c=NBY.get(mapRootId);if(c&&c._parent){mapRootId=c._parent;selId=mapRootId;updateTrail(mapRootId);renderMap();fitScreen(80);saveV();}};
-  $('spLink').onclick=()=>startLinkMode(n.id);
-  sp.querySelectorAll('.lgo').forEach(b=>b.addEventListener('click',()=>{const g=b.dataset.goto;selId=g;let p=NBY.get(g);while(p){collapsed.delete(p.id);p=NBY.get(p._parent);}renderMap();centerOn(g);spRender(NBY.get(g));}));
-  sp.querySelectorAll('.lrm').forEach(b=>b.addEventListener('click',()=>{if(confirm('Remove link?')){removeLink(b.dataset.rmlink);schedSave();renderMap();spRender(NBY.get(n.id));toast('Removed');}  }));
-  const edLine=$('edLine');edLine.value=n.lineStyle||'solid';
+  $('spCloseBtn').onclick=spClose;
+  $('spNote').onclick=()=>{openNote(n);spClose();};
+  $('spCtr').onclick=()=>centerOn(n.id);
+  $('spDrill').onclick=()=>{mapRootId=n.id;selId=n.id;updateTrail(n.id);renderMap();fitScreen(80);saveV();spClose();};
+  $('spUp').onclick=()=>{const c=NBY.get(mapRootId);if(c&&c._parent){mapRootId=c._parent;selId=mapRootId;updateTrail(mapRootId);renderMap();fitScreen(80);saveV();spClose();}};
+  $('spLink').onclick=()=>{startLinkMode(n.id);spClose();};
+  $('spAdd').onclick=()=>{
+    const label=prompt('Child node name:','New Node');if(!label)return;
+    const child={id:crypto.randomUUID(),label:label.trim(),note:'',richNote:'',todos:[],tags:[],links:[],color:n.color||null,lineStyle:'solid',children:[]};
+    const p=NBY.get(n.id);if(!p)return;if(!Array.isArray(p.children))p.children=[];
+    p.children.push(child);collapsed.delete(n.id);reindex();selId=child.id;
+    saveV();renderMap();fitScreen(80);schedSave();toast('Child added ✓');spClose();
+  };
+  sp.querySelectorAll('.lgo').forEach(b=>b.addEventListener('click',()=>{
+    const g=b.dataset.goto;selId=g;
+    let p=NBY.get(g);while(p){collapsed.delete(p.id);p=NBY.get(p._parent);}
+    renderMap();centerOn(g);spClose();
+  }));
+  sp.querySelectorAll('.lrm').forEach(b=>b.addEventListener('click',()=>{
+    if(confirm('Remove link?')){removeLink(b.dataset.rmlink);schedSave();renderMap();spRender(NBY.get(n.id),anchorX,anchorY);toast('Link removed');}
+  }));
+  const edLine=$('edLine');if(edLine)edLine.value=n.lineStyle||'solid';
   let edC=n.color||null;
-  function drawPal(){const w=$('edPal');if(!w)return;w.innerHTML=PAL.map(c=>`<button class="sw${c===edC?' on':''}" data-c="${c}" style="background:${c}"></button>`).join('')+`<button class="sw nx${!edC?' on':''}" data-c="">×</button>`;w.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{edC=b.dataset.c||null;drawPal();});}drawPal();
-  $('spSave').onclick=()=>{const n2=NBY.get(n.id);if(!n2)return;n2.label=$('edLbl').value.trim()||n2.label;n2.color=edC||undefined;n2.lineStyle=edLine.value||'solid';reindex();saveV();renderMap();spRender(NBY.get(n.id));schedSave();toast('Updated ✓');};
-  $('spAdd').onclick=()=>{const child={id:crypto.randomUUID(),label:'New Node',note:'',richNote:'',todos:[],tags:[],links:[],color:edC||null,lineStyle:edLine.value||'solid',children:[]};const p=NBY.get(n.id);if(!p)return;if(!Array.isArray(p.children))p.children=[];p.children.push(child);collapsed.delete(n.id);reindex();selId=child.id;saveV();renderMap();spRender(NBY.get(child.id));fitScreen(80);schedSave();toast('Added ✓');};
-  $('spDel').onclick=()=>{if(n.id===DATA.root.id||n.id===mapRootId)return;if(!confirm(`Delete "${n.label}" and children?`))return;const par=NBY.get(n._parent);if(!par)return;par.children=(par.children||[]).filter(c=>c.id!==n.id);const di=new Set();(function w(x){di.add(x.id);(x.children||[]).forEach(w);})(n);DATA.links=(DATA.links||[]).filter(l=>!di.has(l.from)&&!di.has(l.to));reindex();selId=par.id;renderMap();spRender(NBY.get(selId));schedSave();toast('Deleted ✓');};
-  $('spCloud').onclick=async()=>{flushNote();try{await cSave(DATA);toast('Cloud saved ✓');}catch(e){toast('⚠ Failed');}};
-  $('spJSON').onclick=()=>expJSON(DATA);$('spHTML').onclick=()=>expHTML(DATA);$('spLock').onclick=lockApp;
+  function drawPal(){const w=$('edPal');if(!w)return;w.innerHTML=PAL.map(c=>`<button class="sw${c===edC?' on':''}" data-c="${c}" style="background:${c}"></button>`).join('')+`<button class="sw nx${!edC?' on':''}" data-c="">×</button>`;w.querySelectorAll('.sw').forEach(b=>b.onclick=()=>{edC=b.dataset.c||null;drawPal();});}
+  drawPal();
+  const spSave=$('spSave');
+  if(spSave)spSave.onclick=()=>{
+    const n2=NBY.get(n.id);if(!n2)return;
+    n2.label=$('edLbl').value.trim()||n2.label;
+    n2.color=edC||undefined;n2.lineStyle=$('edLine').value||'solid';
+    reindex();saveV();renderMap();schedSave();toast('Updated ✓');spClose();
+  };
+  const spDel=$('spDel');
+  if(spDel)spDel.onclick=()=>{
+    if(n.id===DATA.root.id||n.id===mapRootId)return;
+    if(!confirm(`Delete "${n.label}" and all children?`))return;
+    const par=NBY.get(n._parent);if(!par)return;
+    par.children=(par.children||[]).filter(c=>c.id!==n.id);
+    const di=new Set();(function w(x){di.add(x.id);(x.children||[]).forEach(w);})(n);
+    DATA.links=(DATA.links||[]).filter(l=>!di.has(l.from)&&!di.has(l.to));
+    reindex();selId=par.id;renderMap();schedSave();toast('Deleted ✓');spClose();
+  };
+  const spCloud=$('spCloud');if(spCloud)spCloud.onclick=async()=>{flushNote();try{await cSave(DATA);toast('Cloud saved ✓');}catch(e){toast('⚠ Failed');}};
+  const spJSON=$('spJSON');if(spJSON)spJSON.onclick=()=>expJSON(DATA);
+  const spHTML=$('spHTML');if(spHTML)spHTML.onclick=()=>expHTML(DATA);
+  const spLock=$('spLock');if(spLock)spLock.onclick=lockApp;
+
+  if(anchorX!==undefined)spOpen(anchorX, anchorY);
 }
 
 /* ── NOTE PANEL ── */
@@ -1176,7 +1371,7 @@ window.addEventListener('keydown',e=>{
   const inNote=ae===nped||ae===npTitle||ae===npTags||ae.classList.contains('todo-text')||ae.classList.contains('wf-add-input')||ae.id==='addTopInput';
   if(inNote)return;
   if(['INPUT','TEXTAREA','SELECT'].includes(ae.tagName))return;
-  if(e.key==='Escape'){if(linkMode){cancelLinkMode();return;}closeNote();helpEl.style.display='none';return;}
+  if(e.key==='Escape'){if(linkMode){cancelLinkMode();return;}spClose();closeNote();helpEl.style.display='none';return;}
   if(curView==='home')return;
   // map shortcuts
   if(e.key==='f'||e.key==='F'){fitScreen();return;}
@@ -1186,9 +1381,9 @@ window.addEventListener('keydown',e=>{
   if(e.key==='l'||e.key==='L'){if(cur&&!linkMode)startLinkMode(cur.id);return;}
   if(e.key==='Enter'&&selId){centerOn(selId);return;}
   if(!cur)return;
-  if(e.key==='ArrowUp'){const p=NBY.get(cur._parent);if(p&&stIds.has(p.id)){selId=p.id;renderMap();spRender(p);}}
-  else if(e.key==='ArrowDown'){const ch=visC(cur).filter(c=>stIds.has(c.id));if(ch.length){selId=ch[0].id;renderMap();spRender(NBY.get(selId));}}
-  else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){const par=NBY.get(cur._parent);if(par){const sibs=visC(par).filter(c=>stIds.has(c.id));const idx=sibs.findIndex(n=>n.id===cur.id);if(idx>=0){const d=e.key==='ArrowLeft'?-1:1;selId=sibs[(idx+d+sibs.length)%sibs.length].id;renderMap();spRender(NBY.get(selId));}}}
+  if(e.key==='ArrowUp'){const p=NBY.get(cur._parent);if(p&&stIds.has(p.id)){selId=p.id;renderMap();spRender(p,window.innerWidth/2,200);}}
+  else if(e.key==='ArrowDown'){const ch=visC(cur).filter(c=>stIds.has(c.id));if(ch.length){selId=ch[0].id;renderMap();spRender(NBY.get(selId),window.innerWidth/2,200);}}
+  else if(e.key==='ArrowLeft'||e.key==='ArrowRight'){const par=NBY.get(cur._parent);if(par){const sibs=visC(par).filter(c=>stIds.has(c.id));const idx=sibs.findIndex(n=>n.id===cur.id);if(idx>=0){const d=e.key==='ArrowLeft'?-1:1;selId=sibs[(idx+d+sibs.length)%sibs.length].id;renderMap();spRender(NBY.get(selId),window.innerWidth/2,200);}}}
   else if(e.key===' '){if(cur.children?.length){if(collapsed.has(cur.id))collapsed.delete(cur.id);else collapsed.add(cur.id);saveV();renderMap();}e.preventDefault();}
 });
 
@@ -1204,6 +1399,17 @@ function toast(msg){let el=document.querySelector('.toast');if(!el){el=document.
 /* ── LOCK ── */
 function lockApp(){closeNote();cancelLinkMode();localStorage.removeItem(LSS);appEl.className='';lockEl.style.display='flex';passIn.value='';lErr.textContent='';lSt.textContent='Enter passkey.';unlockB.disabled=false;unlocked=false;}
 window.addEventListener('beforeunload',()=>{if(unlocked){try{flushNote();localStorage.setItem(LSC,JSON.stringify(DATA));}catch(e){}localStorage.removeItem(LSS);}});
+
+/* ── FAB (mobile add button) ── */
+document.getElementById('homeFAB').addEventListener('click',()=>{
+  const btn=document.getElementById('addTopBtn');
+  const inp=document.getElementById('addTopInput');
+  if(!btn||!inp)return;
+  btn.classList.add('editing');
+  inp.focus();
+  // scroll to it
+  btn.scrollIntoView({behavior:'smooth',block:'center'});
+});
 
 /* ── INIT ── */
 function init(){
